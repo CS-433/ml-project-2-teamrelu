@@ -1,4 +1,3 @@
-orfid	yORF	gene name	GFP tagged?	GFP visualized?	TAP visualized?	abundance	error	localization summary	ambiguous	mitochondrion	vacuole	spindle pole	cell periphery	punctate composite	vacuolar membrane	ER	nuclear periphery	endosome	bud neck	microtubule	Golgi	late Golgi	peroxisome	actin	nucleolus	cytoplasm	ER to Golgi	early Golgi	lipid particle	nucleus	bud	
 206	YAL001C	TFC3	tagged	visualized	TAP visualized	125	NA	cytoplasm,nucleus	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	T	F		
 5281	YAL002W	VPS8	tagged	visualized	TAP visualized	736	NA	endosome	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F	F	F	F	F	F	F	F	F		
 1073	YAL005C	SSA1	tagged	visualized	TAP visualized	269000	NA	cytoplasm	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	T	F	F	F	F	F		
