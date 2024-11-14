@@ -29,3 +29,4 @@ appdirs
 atomicwrites
 gensim
 scipy
+umap-learn
