@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Union
 
 from ruamel import yaml
-from ruamel.yaml import YAMLError
+from ruamel.yaml import YAML, YAMLError
 from ruamel.yaml.comments import CommentedBase
 
 from bio_embeddings.utilities.exceptions import InvalidParameterError
@@ -33,7 +33,8 @@ def parse_config(config_str: str, preserve_order: bool = True) -> dict:
     """
     try:
         if preserve_order:
-            return yaml.load(config_str, Loader=yaml.RoundTripLoader)
+            yaml = YAML(typ="rt")
+            return yaml.load(config_str)
         else:
             return yaml.safe_load(config_str)
     except YAMLError as e:
@@ -44,7 +45,9 @@ def parse_config(config_str: str, preserve_order: bool = True) -> dict:
         ) from e
 
 
-def read_config_file(config_path: Union[str, Path], preserve_order: bool = True) -> dict:
+def read_config_file(
+    config_path: Union[str, Path], preserve_order: bool = True
+) -> dict:
     """
     Read config from path to file.
 
@@ -55,7 +58,8 @@ def read_config_file(config_path: Union[str, Path], preserve_order: bool = True)
     with open(config_path, "r") as fp:
         try:
             if preserve_order:
-                return yaml.load(fp, Loader=yaml.RoundTripLoader)
+                yaml = YAML(typ="rt")
+                return yaml.load(fp)
             else:
                 return yaml.safe_load(fp)
         except YAMLError as e:
@@ -83,6 +87,4 @@ def write_config_file(out_filename: str, config: dict) -> None:
         dumper = yaml.Dumper
 
     with open(out_filename, "w") as f:
-        f.write(
-            yaml.dump(config, Dumper=dumper, default_flow_style=False)
-        )
+        f.write(yaml.dump(config, Dumper=dumper, default_flow_style=False))

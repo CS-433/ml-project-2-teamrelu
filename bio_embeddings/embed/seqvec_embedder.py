@@ -1,6 +1,6 @@
 import logging
 from pathlib import Path
-from typing import List, Optional, Generator
+from typing import Generator, List, Optional
 
 from allennlp.commands.elmo import ElmoEmbedder
 from numpy import ndarray
@@ -20,6 +20,7 @@ class SeqVecEmbedder(EmbedderWithFallback):
     through transfer-learning protein sequences." BMC bioinformatics 20.1 (2019): 723.
     https://doi.org/10.1186/s12859-019-3220-8
     """
+
     name = "seqvec"
     embedding_dimension = 1024
     number_of_layers = 3

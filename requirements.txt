@@ -27,3 +27,5 @@ scikit-learn
 sentry-sdk[flask]
 appdirs
 atomicwrites
+gensim
+scipy
