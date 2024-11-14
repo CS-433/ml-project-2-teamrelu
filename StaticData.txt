@@ -4706,7 +4706,7 @@
 4503	YER057C	HMF1	tagged	not visualized	TAP visualized	672	NA		F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F		
 4896	YER058W	PET117	tagged	not visualized	not TAP visualized	not visualized	NA		F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F		
 5672	YER060W	FCY21	tagged	not visualized	not TAP visualized	not visualized	NA		F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F		
-5668	YER060w-A	FCY22	tagged	not visualized	not TAP visualized	not visualized	NA		F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F		
+5668	YER060W-A	FCY22	tagged	not visualized	not TAP visualized	not visualized	NA		F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F		
 1415	YER065C	ICL1	tagged	not visualized	not TAP visualized	not visualized	NA		F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F		
 4142	YER066C-A		tagged	not visualized	not TAP visualized	not visualized	NA		F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F		
 3988	YER066W		tagged	not visualized	not TAP visualized	not visualized	NA		F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F	F		
