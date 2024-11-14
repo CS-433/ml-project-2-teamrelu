@@ -1,0 +1,59 @@
+`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Submit embedding calculation</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='semantic.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index.css') }}">
+</head>
+<body>
+<div class="ui grid container">
+    <div class="ui row">
+        <div class="sixteen wide column">
+            <h1>Welcome to <strong><pre>bio_embeddings</pre></strong></h1>
+        </div>
+    </div>
+    <div class="ui row">
+        <div class="sixteen wide column">
+            <p>Please note that this is a very basic server.</p>
+            <p>If you have questions, <a target="_blank" href="https://chat.bioembeddings.com">chat with us</a>.</p>
+            You can find out more about <pre>bio_embeddings</pre> by visiting our <a target="_blank" rel="help" href="https://github.com/sacdallago/bio_embeddings">GitHub page</a>.
+        </div>
+    </div>
+    <div class="ui row">
+        <div class="sixteen wide column">
+            <h2>Direct jobs</h2>
+            <p>Direct jobs (e.g., getting secondary structure prediction from ProtT5 on the fly) are available through <a target="_blank" href="https://predictprotein.org">PredictProtein</a> and <a target="_blank" href="https://embed.protein.properties">Embed Protein Properties</a>.</p>
+            <p>In the following, you find the status of the sync workers. If workers are inactive (orange), jobs will not be executed. Blue workers are active and can execute jobs.</p>
+            <label class="ui circular orange {{ "blue" if "prott5" in workers }} label"></label> The ProtT5 worker is currently {{ "in" if "prott5" not in workers }}active.
+            <br />
+            <label class="ui circular orange {{ "blue" if "prott5_annotations" in workers }} label"></label> The ProtT5 Annotations worker is currently {{ "in" if "prott5_annotations" not in workers }}active.
+            <br />
+            <label class="ui circular orange {{ "blue" if "prott5_residue_landscape_annotations" in workers }} label"></label> The ProtT5 Residue Landscape Annotations worker is currently {{ "in" if "prott5_residue_landscape_annotations" not in workers }}active.
+        </div>
+    </div>
+        <div class="ui row">
+        <div class="ui sixteen wide column">
+            <h2>Async jobs</h2>
+            <p>In the following, you find the status of the sync workers. If workers are inactive (orange), jobs will not be executed. Blue workers are active and can execute jobs.</p>
+            <label class="ui circular orange {{ "blue" if "pipeline" in workers }} label"></label> Pipeline jobs are currently {{ "in" if "pipeline" not in workers }}active.
+            <br />
+            <label class="ui circular orange {{ "blue" if "colabfold" in workers }} label"></label> Colabfold jobs are currently {{ "in" if "colabfold" not in workers }}active.
+        </div>
+    </div>
+    <div class="ui row">
+        <div class="sixteen wide column">
+            Programmatic access is available through the <a target="_blank" rel="help" href="/api">API</a>.
+        </div>
+    </div>
+    <div class="ui row">
+        <div class="sixteen wide column">
+            Made by &nbsp; <a rel="author" target="_blank" href="https://christian.dallago.us">Christian Dallago</a> &amp; Konstantin Schütze.
+        </div>
+    </div>
+</div>
+<script type="application/javascript" src="{{ url_for('static', filename='jquery.min.js') }}"></script>
+<script type="application/javascript" src="{{ url_for('static', filename='semantic.min.js') }}"></script>
+<script type="application/javascript" src="{{ url_for('static', filename='index.js') }}"></script>
+</body>
+</html>`

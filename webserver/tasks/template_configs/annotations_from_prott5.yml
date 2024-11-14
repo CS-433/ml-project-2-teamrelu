@@ -1,0 +1,25 @@
+global:
+  sequences_file:
+  prefix:
+prott5_embeddings:
+  type: embed
+  protocol: prottrans_t5_xl_u50
+  reduce: True
+  half_model_directory:
+  max_amino_acids:
+annotations_from_prott5:
+  type: extract
+  protocol: t5_xl_u5_from_publication
+  depends_on: prott5_embeddings
+  secondary_structure_checkpoint_file:
+  subcellular_location_checkpoint_file:
+umap_projections:
+  type: project
+  protocol: umap
+  depends_on: prott5_embeddings
+  n_components: 2
+plotly_visualization:
+  type: visualize
+  protocol: plotly
+  display_unknown: True
+  depends_on: umap_projections

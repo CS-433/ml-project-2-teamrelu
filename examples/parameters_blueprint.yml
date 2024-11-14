@@ -1,0 +1,236 @@
+# global options must be defined
+
+global:
+  # Required: Path to a Fasta file
+  sequences_file: /path/to/sequences.fasta
+  # Required: String for output
+  prefix: my_embeddings
+
+  ## Optional: file manager
+  # file_manager: [*filesystem]
+
+  ## Optional: remap index simple (not via md5, this is not encouraged)
+  # simple_remapping: [True, *False]
+
+  ## Stages are executed in sequential order as they are outlined in this file.
+  ## Stage names must be different!! If not: they will overwrite each_other
+  ## The same stage type (e.g. embed,..) can be executed multiple types.
+  ## Dependencies for a stage are defined in the dependencies parameter
+
+  ## This config file includes options for initializing classes and options specific to the protocol
+
+  ## Options notation:
+  ## *: denotes the default option
+  ## @: denotes that the file or directory will be downloaded and stored locally if not provided
+
+stage_0:
+  type: align
+  # Required: which protocol to use.
+  # Options: mmseqs_search, deepblast
+  protocol: mmseqs_search
+
+  # Required for mmseqs_search: search sequence to search against (can be FASTA, mmseqs db or mmseqs profile)
+  search_sequences_file: /path/to/a/sequence/db.fasta
+  # search_sequences_directory: /path/to/a/sequence/db/
+  # search_profiles_directory: /path/to/a/profiles/db/
+
+  # Optional for mmseqs_search: convert alignment to profile
+  # convert_to_profiles: [True,*False]
+
+  # Optional for mmseqs_search: alignment parameters (check bio_embeddings/align/mmseqs2.py#13 for available options)
+  # mmseqs_search_options:
+  #   num_iterations: 5
+  #   sensitivity: 7.5
+  #   minimum_sequence_identity: 0.2
+  #   maximum_number_of_prefilter_sequences: 100
+  #   alignment_output: True
+
+stage_1:
+  type: embed
+  # Required: which embedder to use
+  # Options: seqvec, prottrans_albert_bfd, prottrans_bert_bfd, prottrans_t5_bfd, prottrans_t5_uniref50,
+  # prottrans_t5_xl_u50, prottrans_xlnet_uniref100, cpcprot, esm, esm1b, esm1v, plus_rnn, unirep, bepler
+  protocol: prottrans_t5_xl_u50
+
+  # Optional: reduce embeddings to fixed size, per-protein. Comment out if not needed.
+  # Note that you can always compute the reduced embeddings from the full embeddings
+  # but some further stages (e.g. unsupervised extract) need this option
+  reduce: True
+
+  # Optional: discard per amino acid embeddings.
+  # Setting this parameter to True will disable storing full size embeddings (per amino acid).
+  # This parameter only works in combination with `reduce: True` or `embeddings_transformer_function`.
+  # discard_per_amino_acid_embeddings: [True, *False]
+
+  # Optional/Advanced: apply a transformation on the per-amino-acid embeddings
+  # === This is an advanced parameter ===
+  # This parameter will be "eval"-uated. It must be a callable. Most likely, you'll want to define lambda functions.
+  # The input of the function is a per-amino-acid embedding (aka. an np array of shape n_layers*embedding_dimension*sequence_length).
+  # You can use numpy functions via "np".
+  # The result of the transformation will be stored in the transformed_embeddings_file.
+  # The pipeline *WILL NOT* check file size of the prospective transformed_embeddings_file.
+  # This parameter can be used in conjunction with `discard_per_amino_acid_embeddings`.
+  # Two examples:
+  #   - "lambda x: x[0].mean(0)" --> for SeqVec, this will return the mean pooled embedding of the first layer
+  #   - "lambda x: x.max(0)" --> for ProtTrans-BERT-BFD, this will return the max pooled embedding, instead of mean pooled
+  # embeddings_transformer_function:
+
+  ## Mandatory for esm1v: This defines which of the five models of the ensemble will be used
+  # ensemble_id: [1,2,3,4,5]
+
+  #### Optional parameters to instantiate classes
+
+  ### Optional for protocol: seqvec
+  # weights_file: @/path/to/file
+  # options_file: @/path/to/file
+  ## The following parameter sets an upper bound on total AA to include when embedding many sequences.
+  ## Adjust this parameter if CUDA runs out of memory! The default (15.000) works for a 1080 with 8GB RAM.
+  # max_amino_acids: [*15000]
+  ## The following parameters sets the amount of AA to include in a batch before writing to disk.
+
+  ### Optional for protocol: fasttext, word2vec, glove, esm
+  # model_file: @/path/to/file
+
+  ### Optional for protocol: albert, bert, xlnet
+  # model_directory: @/path/to/directory
+
+  ### Optional for protocol: seqvec, prottrans_albert_bfd, prottrans_bert_bfd, prottrans_xlnet_uniref100, esm
+  ## Set the following parameter to calculate embeddings on a specific device or a specific GPU on multi-GPU hosts.
+  ## The default, "cuda", runs on the default GPU. You can switch to CPU with "cpu" or select a GPU on
+  ## multi-GPU systems with "cuda:0" or "cuda:1" etc.
+  ## See https://pytorch.org/docs/stable/tensor_attributes.html?highlight=device#torch.torch.device
+  ## for a complete list
+  ## unirep will use the cpu by default; Follow https://github.com/google/jax#pip-installation
+  ## to run it on the gpu
+  # device: cuda
+
+  ## Save numbers with lower precision, so that they take only about half the
+  ## storage space (replace float32 with float16).
+  ## This makes predictions based on the embeddings less exact.
+  # half_precision: [true, *false]
+
+  ## For prottrans_t5_bfd, prottrans_t5_uniref50 and prottrans_t5_xl_u50 only:
+  # Use the model in half precision mode (float16)
+  ## We recommend activating this with T5, since tested GPU (Quadro RTX 3000) reduces memory consumption
+  ## from 12GB to 7GB while the effect in benchmarks is negligible (±0.1 percentages points in different sets,
+  ## generally below standard error)
+  # half_precision_model: [true, *false]
+
+stage_2:
+  type: project
+  # Required: which projection algorithm to use
+  # Options: tsne, umap, pb_tucker
+  protocol: tsne
+  # Either depend on an embedding stage with reduced embeddings
+  depends_on: stage_1
+  # or define mapping and reduced embedding file:
+  # reduced_embeddings_file: path/to/reduced_embeddings_file.h5
+  # mapping_file: path/to/mapping_file.csv
+
+
+  ### Optional for protocol: tsne
+  # n_iter: *15000
+  # perplexity: *6
+  # n_jobs: *-1
+
+  ### Optional for protocol: umap
+  # min_dist: *0.6
+  # spread: *1
+  # n_neighbors: *15
+
+  ### Optional for protocol: tsne and umap
+  # metric: *'cosine'
+  # n_components: *3
+  # random_state: *420
+  # verbose: *1
+
+  ## Optional with pb_tucker: Postprocess reduced embeddings with tucker, which is a contrastive
+  ## learning model trained to distinguish CATH superfamilies. It reduces the dimensionality from 1024 to 128.
+  # model_file: @/path/to/file
+
+stage_3:
+  type: mutagenesis
+  ## Required: Which language model to use
+  ## Options: protbert_bfd_mutagenesis
+  protocol: protbert_bfd_mutagenesis
+  ## Optional: temperature for softmax, see https://arxiv.org/abs/1503.02531
+  # temperature: [1*]
+
+  ## Optional: Since we're running ProtBert, the common ProtBert options explained in `extract` are supported
+  # model_directory: @/path/to/directory
+  # device: cuda
+  # half_precision: [true, *false]
+  # half_precision_model: [true, *false]
+
+stage_4:
+  type: visualize
+  ## Required: which graph to render
+  ## Options: plotly, plot_mutagenesis
+  protocol: plotly
+  ## For plotly: Either depend on a project stage with projected embeddings file
+  depends_on: stage_2
+  ## or define projected_reduced_embeddings_file:
+  # projected_reduced_embeddings_file: path/to/projected_reduced_embeddings_file.h5
+  ## For plot_mutagenesis: Either depend on a mutagenesis stage
+  # depends_on: stage_3
+  ## or define residue_probabilities_file:
+  # residue_probabilities_file: path/to/residue_probabilities_file.csv
+
+  ## Optional for plotly: csv file with annotations
+  ## csv must have header: identifier, label
+  # annotation_file: path/to/annotation_file.csv
+
+  ## Optional for plotly: hide proteins for which there is no annotation in the annotation file (only relevant if annotation file is provided)
+  # display_unknown: [False, *True]
+
+  ## Optional for plotly: set to True if in annotation_file identifiers correspond to sequence MD5 hashes
+  ## if set to False (default), mapping will be performed on original identifiers.
+  ## Where missing or duplicate, will be ignored
+  # merge_via_index: [True, *False]
+
+  ## Optional for plotly: 2D vs 3D plot
+  # n_components: [2,*3]
+
+stage_5:
+  type: extract
+  ## Required: which method to use.
+  ## Current options:
+  ##   - seqvec_from_publication (Uses models evaluated in https://doi.org/10.1186/s12859-019-3220-8 )
+  ##   - bert_from_publication (Uses models evaluated in https://doi.org/10.1101/2020.07.12.199554 )
+  ##   - t5_xl_u50_from_publication (Uses models evaluated in https://doi.org/10.1101/2020.07.12.199554 )
+  ##   - unsupervised (Uses concepts presented in https://github.com/Rostlab/goPredSim )
+  protocol: t5_xl_u50_from_publication
+
+  ## The supervised extract (bert_from_publication and seqvec_from_publication) needs
+  ## the full embeddings, i.e. `discard_per_amino_acid_embeddings` must be false in the
+  ## embed stage, which is the default. For the unsupervised extract, you need the
+  ## reduced embeddings, i.e. set `reduce: True`.
+  ## Instead of an embed stage, you can also provide a file manually, either supply for unsupervised:
+  # reduced_embeddings_file:
+  ## or for bert_from_publication and seqvec_from_publication
+  # embeddings_file:
+  depends_on: stage_2
+
+  ## Optional for protocol: seqvec_from_publication, bert_from_publication,
+  ## will be downloaded if not supplied
+  # secondary_structure_checkpoint_file: path/to/checkpoint.pt
+  # subcellular_location_checkpoint_file: path/to/checkpoint.pt
+
+  ## Required for protocol: unsupervised
+  # reference_embeddings_file: path/to/embeddings.hd5
+  # reference_annotations_file: path/to/annotation_file.csv
+
+  ## Optional for protocol: unsupervised
+  ## The following two options refer to the pairwise_distance function of scikit-learn 0.23.2
+  ## https://scikit-learn.org/stable/modules/generated/sklearn.metrics.pairwise_distances.html#sklearn.metrics.pairwise_distances
+  # n_jobs: [1*]
+  # metric: [euclidean*]
+  ## The following will define how many neighbours to consider to transfer annotations.
+  ## k = 1 means transfer the annotations from the nearest neighbor
+  ## k > 1 will result in merging the annotations of all k > 1 neighbors onto the target embedding
+  # k_nearest_neighbours: [1*]
+  ## The following informs the pipeline whether you want to keep the pairwise distance matrix file.
+  ## This is a CSV containing pairwise distances between query and reference embeddings using your metric.
+  ## The file can become quite big (e.g. UniProt Human (query) vs. SwissProt (reference) results in 45GB)
+  ## By default, this file will be discarded, but you can decide to keep it to perform other calculations.
+  # keep_pairwise_distances_matrix_file: [*False]

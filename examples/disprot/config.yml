@@ -1,0 +1,19 @@
+global:
+  sequences_file: disordercdhit.fasta
+  prefix: disprot
+seqvec_embeddings:
+  type: embed
+  protocol: seqvec
+  reduce: True
+  discard_per_amino_acid_embeddings: True
+umap_projections:
+  type: project
+  protocol: umap
+  depends_on: seqvec_embeddings
+  n_components: 2
+plotly_visualization:
+  type: visualize
+  protocol: plotly
+  annotation_file: disprot_2019_09_labelled_0.2_0.8.csv
+  display_unknown: False
+  depends_on: umap_projections

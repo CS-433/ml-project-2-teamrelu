@@ -1,0 +1,44 @@
+version: '3.1'
+
+services:
+  mongo:
+    image: mongo:4
+    container_name: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: REPLACE_ME
+      MONGO_INITDB_ROOT_PASSWORD: REPLACE_ME
+    networks:
+      - bio_embeddings
+
+  rabbitmq:
+    image: rabbitmq:3-alpine
+    hostname: bio_embeddings_host
+    container_name: rabbitmq
+    networks:
+      - bio_embeddings
+
+  bio_embeddings_worker:
+    image: ghcr.io/bioembeddings/worker
+    container_name: bio_embeddings_worker
+    volumes:
+      - /replace/me/with/a/path/to/the/model/directory:/mnt/models
+    environment:
+      CELERY_BROKER_URL: amqp://rabbitmq
+      MONGO_URL: mongodb://REPLACE_ME:REPLACE_ME@mongo:27017
+    networks:
+      - bio_embeddings
+
+  bio_embeddings_webserver:
+    image: ghcr.io/bioembeddings/webserver
+    container_name: bio_embeddings_webserver
+    ports:
+      # Configure your reverse proxy to forward to this port
+      - 3000:3000
+    environment:
+      CELERY_BROKER_URL: amqp://rabbitmq
+      MONGO_URL: mongodb://REPLACE_ME:REPLACE_ME@mongo:27017
+    networks:
+      - bio_embeddings
+
+networks:
+  bio_embeddings:

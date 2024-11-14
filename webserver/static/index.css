@@ -1,0 +1,28 @@
+pre {
+    display: inline;
+    margin: 0;
+}
+
+.ui.grid.container {
+    padding-top: 4em;
+}
+
+#job-id-status-card{
+    display: none;
+}
+
+#job-id-status-card.show{
+    display: inherit;
+}
+
+.download_file {
+    display: none !important;
+}
+
+.download_file.show{
+    display: inherit !important;
+}
+
+.job.submission.messages {
+    color: red;
+}

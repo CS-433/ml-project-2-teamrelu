@@ -1,0 +1,19 @@
+global:
+  sequences_file: fasta.fa
+  prefix: local
+seqvec_embeddings:
+  type: embed
+  protocol: seqvec
+  reduce: True
+  weights_file: /mnt/nfs/models/seqvec/weights_file
+  options_file: /mnt/nfs/models/seqvec/options_file
+tsne_projections:
+  type: project
+  protocol: tsne
+  depends_on: seqvec_embeddings
+plotly_visualization:
+  type: visualize
+  protocol: plotly
+  depends_on: tsne_projections
+  annotation_file: md5_annotation_file.csv
+  merge_via_index: True

@@ -1,0 +1,10 @@
+global:
+  sequences_file: sequences.fasta
+  prefix: mutagenesis
+mutagenesis:
+  type: mutagenesis
+  protocol: protbert_bfd_mutagenesis
+plot_mutagenesis:
+  type: visualize
+  protocol: plot_mutagenesis
+  depends_on: mutagenesis

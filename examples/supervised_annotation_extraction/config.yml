@@ -1,0 +1,12 @@
+global:
+  sequences_file: fasta.fa
+  prefix: simple
+prott5_embeddings:
+  type: embed
+  protocol: prottrans_t5_xl_u50
+  half_precision_model: True
+annotations_from_seqvec:
+  type: extract
+  protocol: t5_xl_u50_from_publication
+  depends_on: prott5_embeddings
+  get_activations: true
