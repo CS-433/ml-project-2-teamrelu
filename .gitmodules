@@ -1,3 +1,0 @@
-[submodule "esm_"]
-	path = esm_
-	url = git@github.com:facebookresearch/esm.git
