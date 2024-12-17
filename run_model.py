@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 from torch.optim.lr_scheduler import CosineAnnealingLR
 import pandas as pd
+from sklearn.model_selection import train_test_split
 from trainers.training_utils import validate, run_training
 from models.static_model_MLP import StaticModelMLP
 from models.static_model_multibranch import StaticModelMultibranch
@@ -24,7 +25,7 @@ num_classes = 15
 num_timesteps = 5
 # Define hyperparameters
 weight_decay = 1e-4
-num_epochs = 60
+num_epochs = 2
 patience = 5
 batch_size = 32
 static_learnable = False
@@ -32,6 +33,7 @@ learning_rate = 1e-2
 eta_min = 1e-5
 dropout = 0.2
 lambda_penalty = 1e-5
+test_size = 0.2 # for train/test splitting
 # Define device to be used for computations
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -39,8 +41,11 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 file_path = 'final_dataset.csv'
 data = pd.read_csv(file_path)
 
+
+# Split dataset in train and test sets keeping balance for the static label localization
+data_train, data_test = train_test_split(data, test_size=test_size, random_state=seed, stratify = data['static_localization'])
 # Create dataloaders
-dataloader_train, dataloader_test = create_data_loaders(data, batch_size, seed)
+dataloader_train, dataloader_test = create_data_loaders(data_train, data_test, batch_size)
 
 # First run the static model
 static_model = StaticModelMultibranch(num_classes=num_classes, embedding_dim=640, extremities_dim=20, char_vocab_size=20, char_embed_dim=16, intermediate_dim=32, dropout=dropout)

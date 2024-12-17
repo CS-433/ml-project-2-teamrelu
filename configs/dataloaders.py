@@ -1,11 +1,10 @@
 import torch
 import pandas as pd
 from torch.utils.data import DataLoader, Dataset
-from sklearn.model_selection import train_test_split
 from configs.dataset_class import ProteinDataset, create_vocabulary
 from utils.data_cleaning_helpers import create_dynamic_tensor
 
-def create_data_loaders(data, batch_size, seed):
+def create_data_loaders(data_train, data_test, batch_size):
     """ Create train and test dataloaders
     Args:
         data: DataFrame with all data
@@ -15,8 +14,6 @@ def create_data_loaders(data, batch_size, seed):
         dataloader_train: dataloader for training set
         dataloader_test: dataloader for test set
     """
-    # Split dataset in train and test sets keeping balance for the static label localization
-    data_train, data_test = train_test_split(data, test_size=0.2, random_state=seed, stratify = data['static_localization'])
     # Handle dynamic data
     dynamic_data_train = create_dynamic_tensor(data_train.iloc[:, 653:728], data_train.iloc[:, 648:653], data_train.iloc[:,643:648])
     dynamic_data_test = create_dynamic_tensor(data_test.iloc[:, 653:728], data_test.iloc[:, 648:653], data_test.iloc[:,643:648])
