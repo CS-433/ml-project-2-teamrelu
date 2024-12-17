@@ -1,0 +1,9 @@
+fair-esm
+fairscale
+torch
+torchvision
+torchaudio
+pandas
+numpy
+scikit-learn
+matplotlib
