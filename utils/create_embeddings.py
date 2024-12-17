@@ -42,14 +42,15 @@ def create_protein_embeddings(input_file_path, output_file_path, chunk_size=5, s
         mode = 'w' if i==0 else 'a'
         save_chunk_embeddings(chunk, model, alphabet, batch_converter, final_idx, output_file_path, mode, emb_len)
         if verbose:
-            print(f"Completed {i} of {n_data}")
+            print(f"Completed {i+chunk_size} of {n_data}")
 
     # Processing last proteins if n_data is not multiple of chunk_size
     if n_data%chunk_size != 0:
         chunk = data.iloc[n_data - n_data%chunk_size:, :]
         chunk = [tuple(row) for row in chunk.values]
+        mode = 'a' if n_data > chunk_size else 'w'
         print(n_data - n_data%chunk_size)
-        save_chunk_embeddings(chunk, output_file_path, 'a', emb_len)
+        save_chunk_embeddings(chunk, model, alphabet, batch_converter, final_idx, output_file_path, mode, emb_len)
         if verbose:
             print(f"Completed {n_data} of {n_data}")
 
@@ -125,6 +126,7 @@ def get_chunk_embeddings(data, model, alphabet, batch_converter, final_idx):
     - sequence_representations: List of tensor embeddings for each sequence
     """
 
+    print(data[0])
     batch_labels, _ , batch_tokens = batch_converter(data)
     with torch.no_grad():
         results = model(batch_tokens, repr_layers=[final_idx], return_contacts=False)
