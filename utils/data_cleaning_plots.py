@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 import math
-from utils.data_cleaning_helpers import *
+from data_cleaning_helpers import *
 
 # Pie Chart (general and for each phases) 
 def plot_stationary_proteins(data):

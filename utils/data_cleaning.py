@@ -1,11 +1,12 @@
-from utils.data_cleaning_helpers import *
-from utils.data_cleaning_plots import *
+from data_cleaning_helpers import *
+from data_cleaning_plots import *
 
 
 file_path = 'S1_protein_location.xlsx'
 proteins_path = 'orf_trans_all.fasta'
 sheet_names = ["PL - All Data Replicate 1", "PL - All Data Replicate 2", "PL - All Data Replicate 3"]
 sheet_names_concentration = ["TL - Data", "TE - Data"]
+output_interaction_matrix = 'interaction_matrix.csv'
 
 # Dynamic and static dataset creation
 final_df_with_long, dynamic_dataset, static_dataset = datasets_creation(file_path, sheet_names, proteins_path)
@@ -23,4 +24,4 @@ final_df_with_long, dynamic_dataset, static_dataset = datasets_creation(file_pat
 
 # plt.show()
 
-matrix = interaction_matrix('The_Yeast_Interactome_Edges.csv', ';', static_dataset)
+matrix = interaction_matrix('The_Yeast_Interactome_Edges.csv', static_dataset, output_interaction_matrix)
