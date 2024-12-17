@@ -87,7 +87,7 @@ plot_training_results(train_loss, train_accuracy, test_loss, test_accuracy)
 '''
 
 
-model = SimpleDynamicModel(embeddings_dim=640, hidden_dim=256, num_classes=15, num_timesteps=5)
+model = SimpleDynamicModel(embeddings_dim=640, hidden_dim=32, num_classes=15, num_timesteps=5)
 optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
 [train_loss, train_accuracy, test_loss, test_accuracy] = run_training(model = model,
                                                                         criterion = CrossEntropy,
