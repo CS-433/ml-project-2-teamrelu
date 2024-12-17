@@ -457,7 +457,7 @@ def create_dynamic_tensor(interaction_data, te_levels, tl_levels, use_concentrat
     return result_tensor
     
 
-def protein_levels_cleaning(file_path, sheet_names):
+def protein_levels_cleaning(file_path, sheet_names, output_file_path_te, output_file_path_tl):
     """
     Create a matrix containing the interactions between the different proteins
     
@@ -466,6 +466,40 @@ def protein_levels_cleaning(file_path, sheet_names):
         delimiter : a char that separates the data in the file
         data : A pandas DataFrame containing the static dataset
     """
-     
     headers = [0,1]
-    tl_data = load_data(file_path = file_path, sheet_name = sheet_names[0], )
+    data_TE = load_data(file_path = file_path, sheet_name = sheet_names[1], header = headers)
+    data_TL = load_data(file_path = file_path, sheet_name = sheet_names[0], header = headers)
+    
+    # Drop useless rows and columns
+    data_TE = data_TE.drop(data_TE.columns[1], axis=1)
+    data_TL = data_TL.drop(data_TL.columns[1], axis=1)
+    data_TE = data_TE.drop(index=0).reset_index(drop=True)
+    data_TL = data_TL.drop(index=0).reset_index(drop=True)
+    
+    # Cast values in dataset saved as strings
+    data_TE.iloc[:, 1:] = data_TE.iloc[:, 1:].apply(pd.to_numeric, errors='coerce')
+    data_TL.iloc[:, 1:] = data_TL.iloc[:, 1:].apply(pd.to_numeric, errors='coerce')
+    
+    # Make mean among replicates
+    data_TE['G1 Post-START'] = data_TE.iloc[:, [1, 6]].mean(axis=1)
+    data_TE['S/G2'] = data_TE.iloc[:, [2, 7]].mean(axis=1)
+    data_TE['Metaphase'] = data_TE.iloc[:, [3, 8]].mean(axis=1)
+    data_TE['Anaphase'] = data_TE.iloc[:, [4, 9]].mean(axis=1)
+    data_TE['Telophase'] = data_TE.iloc[:, [5, 10]].mean(axis=1)
+    data_TL['G1 Post-START'] = data_TL.iloc[:, [1, 6]].mean(axis=1)
+    data_TL['S/G2'] = data_TL.iloc[:, [2, 7]].mean(axis=1)
+    data_TL['Metaphase'] = data_TL.iloc[:, [3, 8]].mean(axis=1)
+    data_TL['Anaphase'] = data_TL.iloc[:, [4, 9]].mean(axis=1)
+    data_TL['Telophase'] = data_TL.iloc[:, [5, 10]].mean(axis=1)
+    
+    #Drop single replicates data
+    data_TE = data_TE.drop(data_TE.columns[1:11], axis=1)
+    data_TL = data_TL.drop(data_TL.columns[1:11], axis=1)
+    
+    # Rename the first column to 'yORF'
+    data_TE.rename(columns={data_TE.columns[0]: 'yORF'}, inplace=True)
+    data_TL.rename(columns={data_TL.columns[0]: 'yORF'}, inplace=True)
+    
+    # Export the data in csv files
+    create_csv(data_TL, output_file_path_tl)
+    create_csv(data_TE, output_file_path_te)
