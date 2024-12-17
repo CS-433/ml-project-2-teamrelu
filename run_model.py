@@ -6,6 +6,7 @@ from trainers.training_utils import validate, run_training
 from models.static_model_MLP import StaticModelMLP
 from models.static_model_multibranch import StaticModelMultibranch
 from models.static_model_transformer import StaticModelTransformer
+from models.simple_model import SimpleDynamicModel
 from models.temporal_block import TemporalBlock
 from models.tcn_model import TCNDynamicModel
 from models.lstm_model import LSTMDynamicModel
@@ -39,6 +40,7 @@ data = pd.read_csv(file_path)
 
 # Create dataloaders
 dataloader_train, dataloader_test = create_data_loaders(data, batch_size, seed)
+'''
 # First run the static model
 static_model = StaticModelMultibranch(num_classes=num_classes, embedding_dim=640, extremities_dim=20, char_vocab_size=20, char_embed_dim=16, intermediate_dim=32, dropout=dropout)
 static_model.init_weights()
@@ -82,3 +84,18 @@ dynamic_scheduler = CosineAnnealingLR(optimizer,T_max=100, eta_min=eta_min)
                                                                         device = device,
                                                                         verbose = True)
 plot_training_results(train_loss, train_accuracy, test_loss, test_accuracy)
+'''
+
+
+model = SimpleDynamicModel(embeddings_dim=640, hidden_dim=256, num_classes=15, num_timesteps=5)
+optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
+[train_loss, train_accuracy, test_loss, test_accuracy] = run_training(model = model,
+                                                                        criterion = CrossEntropy,
+                                                                        optimizer = optimizer,
+                                                                        scheduler = False,
+                                                                        lambda_penalty = lambda_penalty,
+                                                                        dataloader_train = dataloader_train,
+                                                                        dataloader_test = dataloader_test,
+                                                                        num_epochs = num_epochs,
+                                                                        device = device,
+                                                                        verbose = True)

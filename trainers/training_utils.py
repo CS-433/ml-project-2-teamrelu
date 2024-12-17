@@ -151,8 +151,10 @@ def run_training(model, criterion, optimizer, scheduler, lambda_penalty, dataloa
         # Scheduler step if required
         if scheduler:
             scheduler.step()
-        # Save current learning rate to be displayed
-        current_lr = scheduler.get_last_lr()[-1]
+                # Save current learning rate to be displayed
+            current_lr = scheduler.get_last_lr()[-1]
+        else:
+            current_lr = optimizer.param_groups[0]['lr']
         # Compute train accuracy
         train_accuracy = correct_predictions / total_predictions * 100
 
