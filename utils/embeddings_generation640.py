@@ -4,8 +4,8 @@ import os
 
 # Paths
 current_dir = os.path.dirname(os.path.abspath(__file__)) 
-output_embeddings_path = os.path.join(current_dir, '../datasets/yORF_embeddings.csv')
-output_ext_embeddings_path = os.path.join(current_dir, '../datasets/yORF_extrem_embeddings.csv')
+output_embeddings_path = os.path.join(current_dir, '../datasets/yORF_embeddings_640.csv')
+output_ext_embeddings_path = os.path.join(current_dir, '../datasets/yORF_extrem_embeddings_640.csv')
 sequences_path = os.path.join(current_dir, '../datasets/yORF_sequences.csv')
 
 # Create the file containing yORF and embeddings

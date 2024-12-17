@@ -239,8 +239,10 @@ def datasets_creation(file_path, sheet_names, proteins_path, output_sequences_pa
     # add sequences 
     static_dataset = result_df.merge(proteins, left_on=['yORF'], right_on=['Identifier'], how='left')
     
+    static_dataset['Sequence'] = static_dataset['Sequence'].str[:-1]
+    
     # Drop the redundant columns
-    static_dataset.drop(columns = {'Identifier', 'localization'})
+    static_dataset = static_dataset.drop(columns = {'Identifier', 'localization'})
     
     # Export in a csv file 'yORF_sequences'
     create_csv(static_dataset, output_sequences_path, index = False)

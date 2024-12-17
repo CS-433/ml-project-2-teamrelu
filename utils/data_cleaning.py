@@ -50,7 +50,7 @@ create_correlation_scores(output_interaction_matrix, output_dynamic_path, output
 create_correlation_scores(output_interaction_matrix, output_dynamic_path, False, interaction_matrix_without_concentrations, top_n=10, n_classes=15, null_row='zeros')
 
 # Create the final dynamic dataset
-final_dynamic_dataset(output_dynamic_path, embeddings_path, ext_embeddings_path, output_concentrationTE, output_concentrationTL, output_static_path, output_interaction_matrix, final_dataset_dyn)
+#final_dynamic_dataset(output_dynamic_path, embeddings_path, ext_embeddings_path, output_concentrationTE, output_concentrationTL, output_static_path, output_interaction_matrix, final_dataset_dyn)
 
 
 # Generation of plots
