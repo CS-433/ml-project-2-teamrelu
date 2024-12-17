@@ -2,15 +2,15 @@ import torch
 import torch.nn as nn
 from torch.optim.lr_scheduler import CosineAnnealingLR
 import pandas as pd
-from training_utils import validate, run_training
-from static_model_MLP import StaticModelMLP
-from static_model_multibranch import StaticModelMultibranch
-from static_model_transformer import StaticModelTransformer
-from temporal_block import TemporalBlock
-from dynamic_model import DynamicModel
-from losses import CrossEntropy, CrossEntropyWithTemporalSmoothness, CrossEntropyWithLasso
-from training_graphs import plot_training_results
-from dataloaders import create_data_loaders
+from utils.training_utils import validate, run_training
+from models.static_model_MLP import StaticModelMLP
+from models.static_model_multibranch import StaticModelMultibranch
+from models.static_model_transformer import StaticModelTransformer
+from models.temporal_block import TemporalBlock
+from models.dynamic_model import DynamicModel
+from losses.losses import CrossEntropy, CrossEntropyWithTemporalSmoothness, CrossEntropyWithLasso
+from utils.training_graphs import plot_training_results
+from configs.dataloaders import create_data_loaders
 
 # Initialize random seed
 seed = 30026

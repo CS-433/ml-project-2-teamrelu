@@ -2,8 +2,8 @@ import torch
 import pandas as pd
 from torch.utils.data import DataLoader, Dataset
 from sklearn.model_selection import train_test_split
-from dataset_class import ProteinDataset, create_vocabulary
-from data_cleaning_helpers import create_dynamic_tensor
+from configs.dataset_class import ProteinDataset, create_vocabulary
+from utils.data_cleaning_helpers import create_dynamic_tensor
 
 def create_data_loaders(data, batch_size, seed):
     """ Create train and test dataloaders

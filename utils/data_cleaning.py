@@ -1,5 +1,5 @@
-from data_cleaning_helpers import *
-from data_cleaning_plots import *
+from utils.data_cleaning_helpers import *
+from utils.data_cleaning_plots import *
 
 
 file_path = 'S1_protein_location.xlsx'

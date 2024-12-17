@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from temporal_block import TemporalBlock
+from models.temporal_block import TemporalBlock
 
 class DynamicModel(nn.Module):
     """ DynamicalModel construced with static and TCN models

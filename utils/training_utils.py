@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
-from dynamic_model import DynamicModel
-from losses import CrossEntropy, CrossEntropyWithTemporalSmoothness, CrossEntropyWithLasso
+from models.dynamic_model import DynamicModel
+from losses.losses import CrossEntropy, CrossEntropyWithTemporalSmoothness, CrossEntropyWithLasso
 from inspect import signature
 
 
