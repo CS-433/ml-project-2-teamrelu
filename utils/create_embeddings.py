@@ -33,12 +33,12 @@ def create_protein_embeddings(input_file_path, output_file_path, chunk_size=5, s
 
     # Extract data
     data = pd.read_csv(input_file_path)
-    data = [tuple(row) for row in data.values]
     n_data = data.iloc[:, 0].size
-
+    
     # Create and save embeddings
     for i in range(0, n_data-chunk_size+1, chunk_size):
         chunk=data.iloc[i:i+chunk_size, :]
+        chunk = [tuple(row) for row in chunk.values]
         mode = 'w' if i==0 else 'a'
         save_chunk_embeddings(chunk, model, alphabet, batch_converter, final_idx, output_file_path, mode, emb_len)
         if verbose:
@@ -47,6 +47,7 @@ def create_protein_embeddings(input_file_path, output_file_path, chunk_size=5, s
     # Processing last proteins if n_data is not multiple of chunk_size
     if n_data%chunk_size != 0:
         chunk = data.iloc[n_data - n_data%chunk_size:, :]
+        chunk = [tuple(row) for row in chunk.values]
         print(n_data - n_data%chunk_size)
         save_chunk_embeddings(chunk, output_file_path, 'a', emb_len)
         if verbose:
@@ -99,7 +100,7 @@ def create_extremities_embeddings(input_file_path, output_file_path, extremities
     # Create end embeddings
     end = seq_extremities.iloc[:, [0]+[2]]
     end=[tuple(row) for row in end.values]
-    _, end_representation = get_chunk_embeddings(end)
+    _, end_representation = get_chunk_embeddings(end, model, alphabet, batch_converter, final_idx)
     df_e = pd.DataFrame([e.numpy() for e in end_representation], columns=[f'emb_e{i+1}' for i in range(emb_len)])
 
     # Join the two datasets and export them

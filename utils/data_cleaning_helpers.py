@@ -98,13 +98,16 @@ def detect_long_sequences(data):
 
 
 
-def datasets_creation(file_path, sheet_names, proteins_path):
+def datasets_creation(file_path, sheet_names, proteins_path, output_sequences_path, output_static_path, output_dynamic_path):
     """ Creation of the dataset common between the static and dynamic data 
     
     Args:
         file_path : path of the Excel file (str)
         sheet_names : list of sheet names to load (list of str)
         proteins_path : path of the fasta file (str)
+        output_sequences_path : path (str) in which store the dataset containing the yORF and sequences for all proteins
+        output_static_path : path (str) in which store the dataset containing the yORF and static localizations for all proteins
+        output_static_path : path (str) in which store the dataset containing the yORF and dynamic localizations for all proteins
 
     Returns:
         final_df_with_long : A pandas DataFrame containing also the long sequences needed for the data analyses
@@ -221,7 +224,7 @@ def datasets_creation(file_path, sheet_names, proteins_path):
     dynamic_dataset = dynamic_dataset.loc[:, ~dynamic_dataset.columns.duplicated()]
     
     # export in a csv file
-    create_csv(dynamic_dataset, 'dynamic_localizations.csv', index = False)
+    create_csv(dynamic_dataset, output_dynamic_path, index = False)
     
     # CREATION OF THE STATIC DATASET
     data = pd.concat([proteins_Pre_START, proteins_Post_START, proteins_metaphase, proteins_telophase], axis=0)
@@ -231,7 +234,7 @@ def datasets_creation(file_path, sheet_names, proteins_path):
     result_df = result_df.drop(result_df.columns[1:-1], axis=1)
     
     # Export in a csv file 'yORF_localization'
-    create_csv(result_df, 'yORF_localizations.csv', index = False)
+    create_csv(result_df, output_static_path, index = False)
     
     # add sequences 
     static_dataset = result_df.merge(proteins, left_on=['yORF'], right_on=['Identifier'], how='left')
@@ -240,7 +243,7 @@ def datasets_creation(file_path, sheet_names, proteins_path):
     static_dataset.drop(columns = {'Identifier', 'localization'})
     
     # Export in a csv file 'yORF_sequences'
-    create_csv(static_dataset, 'yORF_sequences.csv', index = False)
+    create_csv(static_dataset, output_sequences_path, index = False)
 
     return final_df_with_long, dynamic_dataset, static_dataset
 
@@ -467,9 +470,9 @@ def protein_levels_cleaning(file_path, sheet_names, output_file_path_te, output_
         output_file_path_te : a file path (str) in which store the TE concentrations of proteins
         output_file_path_te : a file path (str) in which store the TL concentrations of proteins
     """
-    headers = [0,1]
-    data_TE = load_data(file_path = file_path, sheet_name = sheet_names[1], header = headers)
-    data_TL = load_data(file_path = file_path, sheet_name = sheet_names[0], header = headers)
+    headers = 0
+    data_TE = load_data(file_path = file_path, sheet_name = sheet_names[1], headers = headers)
+    data_TL = load_data(file_path = file_path, sheet_name = sheet_names[0], headers = headers)
     
     # Drop useless rows and columns
     data_TE = data_TE.drop(data_TE.columns[1], axis=1)
@@ -502,8 +505,8 @@ def protein_levels_cleaning(file_path, sheet_names, output_file_path_te, output_
     data_TL.rename(columns={data_TL.columns[0]: 'yORF'}, inplace=True)
     
     # Export the data in csv files
-    create_csv(data_TL, output_file_path_tl)
     create_csv(data_TE, output_file_path_te)
+    create_csv(data_TL, output_file_path_tl)
 
 
 
@@ -534,7 +537,15 @@ def create_correlation_scores(path_interaction, path_locations, path_concentrati
     if path_concentrations is not False:
         concentrations = pd.read_csv(path_concentrations)
     else:
-        concentrations = pd.DataFrame({'ones': [1] * len(yorfs)}) #if we don't want to take in account concentrations we just set to 1
+        concentrations = pd.DataFrame({
+            'yORF': yorfs,
+            'G1 Post-START': [1] * len(yorfs),
+            'S/G2': [1] * len(yorfs),
+            'Metaphase': [1] * len(yorfs),
+            'Anaphase': [1] * len(yorfs),
+            'Telophase': [1] * len(yorfs)
+        }) #if we don't want to take in account concentrations we just set to 1
+
     concentrations = pd.merge(yorfs, concentrations, on='yORF', how='left')
     concentrations.fillna(concentrations.mean(numeric_only=True), inplace=True) 
 
@@ -640,6 +651,8 @@ def merge_data_per_phase(phase, concentrations, locations, interactions):
     df_phase = pd.merge(df_phase, interactions, on='yORF')
     return df_phase
 
+
+
 def correlation_data_per_phase(df, null_vector_option, num_classes, top_n):
     """
     Helper function: calculates class correlation data for a specific cell cycle phase
@@ -666,3 +679,83 @@ def correlation_data_per_phase(df, null_vector_option, num_classes, top_n):
     cor_pos =pd.DataFrame(cor_pos)
     cor_pos['yORF'] = df['yORF']
     return cor_pos
+
+
+
+def final_dynamic_dataset(dynamic_localizations_path, embeddings_path, extrem_sequences_path, TE_levels_path, TL_levels_path, static_localization_path, local_interactions_path, output_file_path):
+    """
+    Assemble the complete dynamic dataset ussing all the dynamic data
+
+    Args:
+    - dynamic_localizations_path : path (str) to a file containing the localizations of the proteins in each phases
+    - embeddings_path : path (str) to a file containing the embeddings for all the protein sequences
+    - extrem_sequences_path : path (str) to a file containing the first and last 20 amminoacids for each sequence
+    - TE_levels_path : path (str) to a file containing the TE concentration for each protein
+    - TL_levels_path : path (str) to a file containing the TL concentration for each protein
+    - static_localization_path : path (str) to a file containing the static localization
+    - local_interactions_path : path (str) to a file containing the interaction between the different proteins
+    - output_file_path : path (str) to a file in which save the final dynamic dataset 
+
+    Returns:
+    - data : pandas DataFrame containing the final dynamic dataset
+    """
+    embeddings = pd.read_csv(embeddings_path)
+    # Rename the embeddings columns
+    embeddings.columns = ['yORF'] + [f'emb{i}' for i in range(1, 641)]
+    
+    ext_sequence = pd.read_csv(extrem_sequences_path)
+    concentration_TE = pd.read_csv(TE_levels_path)
+    concentration_TL = pd.read_csv(TL_levels_path)
+    
+    # Rename the columns in concentration_TE and concentration_TL
+    concentration_TE = concentration_TE.rename(columns={
+    'S/G2': 'S/G2_TE',
+    'Metaphase': 'Metaphase_TE',
+    'Telophase': 'Telophase_TE',
+    'G1 Post-START': 'G1_Post_START_TE',
+    'G1 Pre-START': 'G1_Pre_START_TE',
+    'Anaphase': 'Anaphase_TE'
+    })
+    
+    concentration_TL = concentration_TL.rename(columns={
+    'S/G2': 'S/G2_TL',
+    'Metaphase': 'Metaphase_TL',
+    'Telophase': 'Telophase_TL',
+    'G1 Post-START': 'G1_Post_START_TL',
+    'G1 Pre-START': 'G1_Pre_START_TL',
+    'Anaphase': 'Anaphase_TL'
+    })
+    
+    local_interaction = pd.read_csv(local_interactions_path)
+    dynamic_localizations = pd.read_csv(dynamic_localizations_path)
+    dynamic_localizations = dynamic_localizations.rename(columns={
+    'S/G2': 'S/G2_localization',
+    'Metaphase': 'Metaphase_localization',
+    'Telophase': 'Telophase_localization',
+    'G1 Post-START': 'G1_Post_START_localization',
+    'G1 Pre-START': 'G1_Pre_START_localization',
+    'Anaphase': 'Anaphase_localization'
+    })
+    
+    static_localizations = pd.read_csv(static_localization_path)
+    static_localizations = static_localizations.rename(columns={
+    'localization': 'static_localization',
+    })
+    
+    #setting Nan in TE, TL to mean
+    yorfs = static_localizations['yORF']
+    concentration_TE = pd.merge(yorfs, concentration_TE, on='yORF', how='left')
+    concentration_TE.fillna(concentration_TE.mean(numeric_only=True), inplace=True)
+    concentration_TL = pd.merge(yorfs, concentration_TL, on='yORF', how='left')
+    concentration_TL.fillna(concentration_TL.mean(numeric_only=True), inplace=True)
+    
+    # Merge the data
+    data = pd.merge(embeddings, ext_sequence, on='yORF')
+    data = pd.merge(data, concentration_TL, on='yORF')
+    data = pd.merge(data, concentration_TE, on='yORF')
+    data = pd.merge(data, local_interaction, on='yORF')
+    data = pd.merge(data, static_localizations, on='yORF')
+    data = pd.merge(data, dynamic_localizations, on='yORF')
+    
+    create_csv(data, output_file_path)
+    return data
