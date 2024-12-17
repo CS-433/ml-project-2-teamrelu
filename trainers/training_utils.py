@@ -61,7 +61,7 @@ def validate(model, dataloader_test, device):
     # Return test loss and accuracy
     return test_loss, test_accuracy
 
-def run_training(model, criterion, optimizer, scheduler, lambda_penalty, dataloader_train, dataloader_test, num_epochs, device, verbose):
+def run_training(model, criterion, optimizer, scheduler, lambda_penalty, dataloader_train, dataloader_test, num_epochs, patience, device, verbose):
     """Training loop
         Args:
             model: PyTorch model to be evaluated
@@ -72,6 +72,7 @@ def run_training(model, criterion, optimizer, scheduler, lambda_penalty, dataloa
             dataloader_train: DataLoader object that provides an iterable over the training dataset
             dataloader_test: DataLoader object that provides an iterable over the test dataset
             num_epochs: total number of epochs (full passes over the training dataset)
+            patience: number of consecutive epochs allowed for test loss to not improve before stopping the training
             device: the device (CPU or GPU) on which the model and data are loaded
         Return:
             train_loss_history: list with train loss for each epoch
@@ -86,6 +87,11 @@ def run_training(model, criterion, optimizer, scheduler, lambda_penalty, dataloa
     train_accuracy_history = []
     test_loss_history = []
     test_accuracy_history = []
+
+    # Inizialize variables for early stopping
+    best_test_loss = float('inf')
+    early_stop_counter = 0
+    best_model_state = None
 
     for epoch in range(num_epochs):
         # Set model to train
@@ -166,8 +172,25 @@ def run_training(model, criterion, optimizer, scheduler, lambda_penalty, dataloa
         test_loss_history.append(test_loss)
         test_accuracy_history.append(test_accuracy)
 
+        # Check for early stopping
+        if test_loss < best_test_loss:
+            best_test_loss = test_loss
+            best_model_state = model.state_dict()  # Save the best model weights
+            early_stop_counter = 0  # Reset counter
+        else:
+            early_stop_counter += 1  # Increment counter if no improvement
+
+
         # Display all the useful results of the epoch if verbose option set to true
         if verbose:
             print(f"Epoch [{epoch+1}/{num_epochs}],\tTraining Loss: {epoch_loss/len(dataloader_train):.4f}, Training accuracy: {train_accuracy:.2f},\tTest Loss: {test_loss:.4f}, Test Accuracy: {test_accuracy:.2f},\tLearning rate: {current_lr:.5f}")
         
+        # Break training if patience is exhausted
+        if early_stop_counter >= patience:
+            print(f"Early stopping triggered after {epoch+1} epochs. Best test loss: {best_test_loss:.4f}")
+            break
+
+    # Load best model weights before returning
+    model.load_state_dict(best_model_state)
+
     return train_loss_history, train_accuracy_history, test_loss_history, test_accuracy_history

@@ -25,6 +25,7 @@ num_timesteps = 5
 # Define hyperparameters
 weight_decay = 1e-4
 num_epochs = 60
+patience = 5
 batch_size = 32
 static_learnable = False
 learning_rate = 1e-2
@@ -40,7 +41,7 @@ data = pd.read_csv(file_path)
 
 # Create dataloaders
 dataloader_train, dataloader_test = create_data_loaders(data, batch_size, seed)
-'''
+
 # First run the static model
 static_model = StaticModelMultibranch(num_classes=num_classes, embedding_dim=640, extremities_dim=20, char_vocab_size=20, char_embed_dim=16, intermediate_dim=32, dropout=dropout)
 static_model.init_weights()
@@ -54,6 +55,7 @@ static_scheduler = CosineAnnealingLR(optimizer,T_max=(len(dataloader_train.datas
                                                                         dataloader_train = dataloader_train,
                                                                         dataloader_test = dataloader_test,
                                                                         num_epochs = num_epochs,
+                                                                        patience = patience,
                                                                         device = device,
                                                                         verbose = True)
 # Define TCN block and initialize its weights
@@ -81,12 +83,13 @@ dynamic_scheduler = CosineAnnealingLR(optimizer,T_max=100, eta_min=eta_min)
                                                                         dataloader_train = dataloader_train,
                                                                         dataloader_test = dataloader_test,
                                                                         num_epochs = num_epochs,
+                                                                        patience = patience,
                                                                         device = device,
                                                                         verbose = True)
 plot_training_results(train_loss, train_accuracy, test_loss, test_accuracy)
+
+
 '''
-
-
 model = SimpleDynamicModel(embeddings_dim=640, hidden_dim=32, num_classes=15, num_timesteps=5)
 optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
 [train_loss, train_accuracy, test_loss, test_accuracy] = run_training(model = model,
@@ -99,3 +102,4 @@ optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay
                                                                         num_epochs = num_epochs,
                                                                         device = device,
                                                                         verbose = True)
+                                                                        '''
