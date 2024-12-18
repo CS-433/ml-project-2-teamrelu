@@ -4,6 +4,7 @@ import pandas as pd
 from trainers.cross_validation import k_fold_cross_validation
 from models.static_model_multibranch import StaticModelMultibranch
 from losses.losses import CrossEntropy
+import json
 
 # Initialize random seed
 seed = 32
@@ -14,15 +15,10 @@ torch.cuda.manual_seed(seed)
 num_classes = 15
 num_timesteps = 5
 # Define hyperparameters
-weight_decay = 1e-4
-num_epochs = 2
-patience = 5
+num_epochs = 100
+patience = 15
 batch_size = 32
-static_learnable = False
-learning_rate = 1e-2
-eta_min = 1e-5
-dropout = 0.2
-lambda_penalty = 1e-5
+k_folds = 4
 test_size = 0.2 # for train/test splitting
 # Define device to be used for computations
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -32,9 +28,10 @@ file_path = 'final_dataset.csv'
 data = pd.read_csv(file_path)
 
 parameter_grid = {
-    "dropout": [0.1, 0.3],
+    "dropout": [0, 0.25, 0.5],
     "learning_rate": [0.001, 0.01],
-    "weight_decay": [0.0001, 0.01]
+    "weight_decay": [0, 0.0001, 0.01],
+    "scheduler": ['CosineAnnealingLR', 'StepLR', 'ExponentialLR']
 }
 
 best_params, results = k_fold_cross_validation(
@@ -46,11 +43,17 @@ best_params, results = k_fold_cross_validation(
     patience,
     batch_size,
     device,
-    k_folds=5,
+    k_folds=k_folds,
     lambda_penalty=0.0,
     seed=32,
     cross_validation_on_loss=True,
     verbose=True
 )
 
-print('mario')
+results_file = 'cross_val_results'
+with open(results_file, 'w') as f:
+    json.dump(results, f, indent=4)
+
+best_file = 'best_results'
+with open(best_file, 'w') as f:
+    json.dump(best_params, f, indent=4)

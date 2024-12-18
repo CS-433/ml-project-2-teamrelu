@@ -73,11 +73,21 @@ def k_fold_cross_validation(
 
             # Initialize the model
             model = model_class(dropout=params['dropout']).to(device)
-
+            model.init_weights()
 
             # Initialize optimizer and scheduler
             optimizer = torch.optim.AdamW(model.parameters(), lr=params['learning_rate'], weight_decay=params['weight_decay'])
-            scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer,T_max=100, eta_min=1e-5)
+            # Initialize scheduler based on the passed parameter
+            scheduler_type = params['scheduler']
+            if scheduler_type == 'CosineAnnealingLR':
+                scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=100, eta_min=1e-5)
+            elif scheduler_type == 'StepLR':
+                scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.1)
+            elif scheduler_type == 'ExponentialLR':
+                scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.95)
+            else:
+                raise ValueError(f"Unknown scheduler type: {scheduler_type}")
+
 
             # Train and validate the model using run_training
             _, _, val_loss, val_acc = run_training(
