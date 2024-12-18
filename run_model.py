@@ -6,11 +6,10 @@ from sklearn.model_selection import train_test_split
 from trainers.training_utils import validate, run_training
 from models.static_model_MLP import StaticModelMLP
 from models.static_model_multibranch import StaticModelMultibranch
-from models.static_model_transformer import StaticModelTransformer
 from models.simple_model import SimpleDynamicModel
 from models.temporal_block import TemporalBlock
 from models.tcn_model import TCNDynamicModel
-from models.lstm_model import LSTMDynamicModel
+from models.modulable_lstm_model import ModulableLSTMDynamicModel
 from losses.losses import CrossEntropy, CrossEntropyWithTemporalSmoothness, CrossEntropyWithLasso
 from utils.training_graphs import plot_training_results
 from configs.dataloaders import create_data_loaders
@@ -36,6 +35,10 @@ lambda_penalty = 1e-5
 test_size = 0.2 # for train/test splitting
 # Define device to be used for computations
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+no_concentration = True
+no_interaction = True
+no_static = False
 
 # Load data
 file_path = 'final_dataset.csv'
@@ -69,7 +72,7 @@ temporal_block.initialize_weights()
 # Create dynamic model and initialize its weights
 #dynamic_model = TCNDynamicModel(static_model, temporal_block, static_learnable=False, num_timesteps=num_timesteps, num_classes=num_classes)
 #dynamic_model.initialize_weights()
-dynamic_model = LSTMDynamicModel(static_model, static_learnable=static_learnable, num_timesteps=num_timesteps, num_classes=num_classes, num_features = 34, hidden_size = 64, num_layers=2, dropout=dropout)
+dynamic_model = ModulableLSTMDynamicModel(static_model, static_learnable=static_learnable, num_timesteps=num_timesteps, num_classes=num_classes, num_features = 34, hidden_size = 64, num_layers=2, dropout=dropout, no_concentration=no_concentration, no_interaction=no_interaction, no_static=no_static)
 # Define optimizer
 if static_learnable == True:
     optimizer = torch.optim.AdamW( [{'params': dynamic_model.StaticModel.parameters(), 'lr': eta_min},
