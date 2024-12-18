@@ -81,7 +81,7 @@ class StaticModelMultibranch(nn.Module):
             torch.Tensor: Processed sequence features after transformer and dense layer.
         """
         x = self.char_embedding(x)
-        x = x + self.positional_embedding.unsqueeze(0) #Adds a 
+        x = x + self.positional_embedding.unsqueeze(0) #Adds a dimension
         x = self.transformer(x)
         x = x.mean(dim=1)
         x = self.seq_dense(x)
