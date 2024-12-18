@@ -9,8 +9,8 @@ def CrossEntropyWithTemporalSmoothness(outputs, targets, params):
     """Loss function 2: CrossEntropy with penalty for predictions which change a lot along time"""
     ce_loss = nn.CrossEntropyLoss()(outputs, targets)
     # Compute temporal smoothness penalty
-    lambda_penalty = params(0)
-    num_timesteps = params(1)
+    lambda_penalty = params[0]
+    num_timesteps = params[1]
     outputs = outputs.view(outputs.size(0), num_timesteps, -1)
     
     temporal_diff = outputs[:, 1:, :] - outputs[:, :-1, :]  # Difference between consecutive timesteps DA SISTEMARE

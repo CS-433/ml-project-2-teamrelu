@@ -135,11 +135,11 @@ def k_fold_cross_validation_static(
 
     return best_params, results
 
+
 def k_fold_cross_validation_dynamic(
     static_model_class,
     dynamic_model_class,
     dataset,
-    criterion,
     parameter_grid,
     static_params,
     num_epochs,
@@ -147,10 +147,8 @@ def k_fold_cross_validation_dynamic(
     batch_size,
     device,
     k_folds=5,
-    lambda_penalty=0.0,
     seed=32,
     cross_validation_on_loss=True,
-    static_model = False,
     verbose=True
 ):
     """
@@ -168,10 +166,8 @@ def k_fold_cross_validation_dynamic(
         batch_size: number of samples in each batch
         device: Device to train on ('cuda' or 'cpu')
         k_folds: Number of folds for cross-validation
-        lambda_penalty: Regularization coefficient
         seed: random number generator seed
         cross_validation_on_loss: boolean to decide on which metric to do cross validation
-        static_model: boolean to decide if cross validate static model or dynamic model
         verbose: Print training progress
 
     Returns:
@@ -184,15 +180,16 @@ def k_fold_cross_validation_dynamic(
     param_names = list(parameter_grid.keys())
 
     results = []
-
+    i = 0
     # Iterate through all combinations of hyperparameters
     for param_set in all_params:
+        i += 1
         params = dict(zip(param_names, param_set))
         avg_val_loss = 0.0
         avg_val_accuracy = 0.0
 
         if verbose:
-            print(f"Testing hyperparameters: {params}")
+            print(f"Testing hyperparameters: {params},\n set: {i}")
 
         # K-Fold Cross-Validation
         for fold, (train_idx, val_idx) in enumerate(kfold.split(dataset)):
@@ -207,21 +204,21 @@ def k_fold_cross_validation_dynamic(
             train_loader, test_loader = create_data_loaders(data_train, data_test, batch_size)
 
             # Train static model with its best parameters
-            model = static_model_class(dropout=static_params['dropout']).to(device)
-            model.init_weights()
-            static_optimizer = torch.optim.AdamW(model.parameters(), lr=static_params['learning_rate'], weight_decay=static_params['weight_decay'])
+            static_model = static_model_class(dropout=static_params['dropout']).to(device)
+            static_model.init_weights()
+            static_optimizer = torch.optim.AdamW(static_model.parameters(), lr=static_params['learning_rate'], weight_decay=static_params['weight_decay'])
             static_scheduler_type = static_params['scheduler']
             if static_scheduler_type == 'CosineAnnealingLR':
-                static_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=100, eta_min=1e-5)
+                static_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(static_optimizer, T_max=100, eta_min=1e-5)
             elif static_scheduler_type == 'StepLR':
-                static_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.1)
+                static_scheduler = torch.optim.lr_scheduler.StepLR(static_optimizer, step_size=30, gamma=0.1)
             elif static_scheduler_type == 'ExponentialLR':
-                static_scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.95)
+                static_scheduler = torch.optim.lr_scheduler.ExponentialLR(static_optimizer, gamma=0.95)
             else:
                 raise ValueError(f"Unknown scheduler type: {scheduler_type}")
             
             _, _, _, _ = run_training(
-                model=model,
+                model=static_model,
                 criterion=static_params['criterion'],
                 optimizer=static_optimizer,
                 scheduler=static_scheduler,
@@ -240,10 +237,10 @@ def k_fold_cross_validation_dynamic(
             # Create dynamic model and initialize its weights
             #dynamic_model = TCNDynamicModel(static_model, temporal_block, static_learnable=False, num_timesteps=num_timesteps, num_classes=num_classes)
             #dynamic_model.initialize_weights()
-            dynamic_model = dynamic_model_class(static_model, static_learnable=params['static_learnable'], hidden_size=static_params['hidden_size'], num_layers=2, dropout=params['dropout'])
+            dynamic_model = dynamic_model_class(static_model, static_learnable=params['static_learnable'], hidden_size=params['hidden_size'], num_layers=2, dropout=params['dropout'])
 
             # Initialize optimizer and scheduler
-            optimizer = torch.optim.AdamW(model.parameters(), lr=params['learning_rate'], weight_decay=params['weight_decay'])
+            optimizer = torch.optim.AdamW(dynamic_model.parameters(), lr=params['learning_rate'], weight_decay=params['weight_decay'])
             # Initialize scheduler based on the passed parameter
             scheduler_type = params['scheduler']
             if scheduler_type == 'CosineAnnealingLR':
@@ -259,7 +256,7 @@ def k_fold_cross_validation_dynamic(
             # Train and validate the model using run_training
             _, _, val_loss, val_acc = run_training(
                 model=dynamic_model,
-                criterion=criterion,
+                criterion=params['criterion'],
                 optimizer=optimizer,
                 scheduler=scheduler,
                 lambda_penalty= params['lambda_penalty'],

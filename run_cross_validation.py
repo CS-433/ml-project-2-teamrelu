@@ -17,7 +17,7 @@ num_classes = 15
 num_timesteps = 5
 # Define hyperparameters
 num_epochs = 100
-patience = 15
+patience = 10
 batch_size = 32
 k_folds = 4
 test_size = 0.2 # for train/test splitting
@@ -72,15 +72,16 @@ with open(file_path, 'r') as file:
 best_params_static["criterion"] = CrossEntropy
 
 parameter_grid = {
-    "dropout": [0.1, 0.2],
+    "dropout": [0.2],
     "learning_rate": [0.001, 0.01],
-    "weight_decay": [0, 0.01],
-    "scheduler": ['CosineAnnealingLR', 'StepLR'],
-    "criterion": [CrossEntropy, CrossEntropyWithLasso, CrossEntropyWithTemporalSmoothness],
-    "lambda_penalty": [1e-5, 1e-2],
+    "weight_decay": [0.01],
+    "scheduler": ['StepLR'],
+    "criterion": [CrossEntropyWithTemporalSmoothness],
+    "lambda_penalty": [0, 1e-5, 1e-2],
     "static_learnable": [True, False],
     "hidden_size": [32, 64]
 }
+
 
 best_params, results = k_fold_cross_validation_dynamic(
     StaticModelMultibranch,
@@ -92,9 +93,16 @@ best_params, results = k_fold_cross_validation_dynamic(
     patience,
     batch_size,
     device,
-    k_folds=5,
-    seed=32,
+    k_folds=3,
+    seed=seed,
     cross_validation_on_loss=True,
-    static_model = False,
     verbose=True
 )
+
+results_file = 'cross_val_results_dynamic'
+with open(results_file, 'w') as f:
+    json.dump(results, f, indent=4)
+
+best_file = 'best_results_dynamic'
+with open(best_file, 'w') as f:
+    json.dump(best_params, f, indent=4)

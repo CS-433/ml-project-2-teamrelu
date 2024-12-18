@@ -116,6 +116,7 @@ def run_training(model, criterion, optimizer, scheduler, lambda_penalty, dataloa
             if len(signature(model.forward).parameters) == 4:
                 outputs = model(dynamic_data, global_input, ind_start_seq, ind_end_seq)
                 labels = dynamic_labels
+                num_timesteps = labels.size(1)
             elif len(signature(model.forward).parameters) == 3:
                 outputs = model(global_input, ind_start_seq, ind_end_seq)
                 labels = static_labels
@@ -125,7 +126,6 @@ def run_training(model, criterion, optimizer, scheduler, lambda_penalty, dataloa
 
             # Reshape outputs and labels for accuracy computation in the case of dynamic data dimensions (i.e. with timesteps dimension)
             outputs = outputs.view(-1, outputs.size(-1))  # [batch_size * seq_length, num_classes]
-            num_timesteps = labels.size(0)
             labels = labels.view(-1)  # [batch_size * seq_length]
 
             # Count exact values and add to the total exact values
@@ -187,7 +187,8 @@ def run_training(model, criterion, optimizer, scheduler, lambda_penalty, dataloa
         
         # Break training if patience is exhausted
         if early_stop_counter >= patience:
-            print(f"Early stopping triggered after {epoch+1} epochs. Best test loss: {best_test_loss:.4f}")
+            if verbose:
+                print(f"Early stopping triggered after {epoch+1} epochs. Best test loss: {best_test_loss:.4f}")
             break
 
     # Load best model weights before returning
