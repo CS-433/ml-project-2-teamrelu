@@ -20,7 +20,7 @@ class TemporalBlock(nn.Module):
         forward(x: torch.Tensor) -> torch.Tensor: Usual forward pass of neural networks
     """
 
-    def __init__(self, input_dim=17, intermediate_dim=15, output_dim=15, kernel_size=3, stride=1, dilation_1 = 1, dilation_2 = 2, dropout=0.2):
+    def __init__(self, input_dim=19, intermediate_dim=15, output_dim=15, kernel_size=3, stride=1, dilation_1 = 1, dilation_2 = 2, dropout=0.2):
         super(TemporalBlock, self).__init__()
         """
         Class constructor

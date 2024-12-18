@@ -77,16 +77,16 @@ class ModulableLSTMDynamicModel(nn.Module):
             static_representation = static_features.unsqueeze(1).repeat(1, self.num_timesteps, 1) # Expand static dataset to match dynamic dimensions [batch_size, num_timesteps, num_classes]
 
         if self.no_concentration:
-            dynamic_inputs = dynamic_data[:,:,:15]
+            dynamic_data = dynamic_data[:,:,:15]
 
         if self.no_interaction:
-            dynamic_inputs = dynamic_inputs[:,:,15:]
+            dynamic_data = dynamic_data[:,:,15:]
 
         if self.no_static:
-            combined_inputs = dynamic_inputs
+            combined_inputs = dynamic_data
         else:
         # Combine static and dynamic inputs
-            combined_inputs = torch.cat([static_representation, dynamic_inputs], dim=2)
+            combined_inputs = torch.cat([static_representation, dynamic_data], dim=2)
 
         # Process through the LSTM
         lstm_out, _ = self.lstm(combined_inputs)

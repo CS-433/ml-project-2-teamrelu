@@ -41,6 +41,9 @@ def validate(model, dataloader_test, device):
             elif len(signature(model.forward).parameters) == 3:
                 outputs = model(global_input, ind_start_seq, ind_end_seq)
                 labels = static_labels
+            elif len(signature(model.forward).parameters) == 2:
+                outputs = model(dynamic_data, global_input)
+                labels = dynamic_labels
             elif len(signature(model.forward).parameters) == 1:
                 outputs = model(global_input)
                 labels = static_labels
@@ -126,12 +129,16 @@ def run_training(model, criterion, optimizer, scheduler, lambda_penalty, dataloa
             elif len(signature(model.forward).parameters) == 3:
                 outputs = model(global_input, ind_start_seq, ind_end_seq)
                 labels = static_labels
+            elif len(signature(model.forward).parameters) == 2:
+                outputs = model(dynamic_data, global_input)
+                labels = dynamic_labels
+                num_timesteps = labels.size(1)
             elif len(signature(model.forward).parameters) == 1:
                 outputs = model(global_input)
                 labels = static_labels
             else:
-                # If the number of parameters is not 1, 3, or 4, raise an error
-                raise ValueError(f"Unsupported number of parameters in the method function. Expected 1, 3, or 4, but got {len(signature(model).parameters)}.")
+                # If the number of parameters is not 1, 2, 3, or 4, raise an error
+                raise ValueError(f"Unsupported number of parameters in the method function. Expected 1, 2, 3, or 4, but got {len(signature(model).parameters)}.")
 
             # Reshape outputs and labels for accuracy computation in the case of dynamic data dimensions (i.e. with timesteps dimension)
             outputs = outputs.view(-1, outputs.size(-1))  # [batch_size * seq_length, num_classes]
