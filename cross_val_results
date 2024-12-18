@@ -1,0 +1,542 @@
+[
+    {
+        "params": {
+            "dropout": 0,
+            "learning_rate": 0.001,
+            "weight_decay": 0,
+            "scheduler": "CosineAnnealingLR"
+        },
+        "avg_val_loss": 1.5862387200551373,
+        "avg_val_accuracy": 52.22911963882619
+    },
+    {
+        "params": {
+            "dropout": 0,
+            "learning_rate": 0.001,
+            "weight_decay": 0,
+            "scheduler": "StepLR"
+        },
+        "avg_val_loss": 1.6007162603948797,
+        "avg_val_accuracy": 53.35778781038374
+    },
+    {
+        "params": {
+            "dropout": 0,
+            "learning_rate": 0.001,
+            "weight_decay": 0,
+            "scheduler": "ExponentialLR"
+        },
+        "avg_val_loss": 1.4503638659204756,
+        "avg_val_accuracy": 53.18848758465012
+    },
+    {
+        "params": {
+            "dropout": 0,
+            "learning_rate": 0.001,
+            "weight_decay": 0.0001,
+            "scheduler": "CosineAnnealingLR"
+        },
+        "avg_val_loss": 1.5798341945878096,
+        "avg_val_accuracy": 52.99097065462753
+    },
+    {
+        "params": {
+            "dropout": 0,
+            "learning_rate": 0.001,
+            "weight_decay": 0.0001,
+            "scheduler": "StepLR"
+        },
+        "avg_val_loss": 1.5626085656029836,
+        "avg_val_accuracy": 53.7528216704289
+    },
+    {
+        "params": {
+            "dropout": 0,
+            "learning_rate": 0.001,
+            "weight_decay": 0.0001,
+            "scheduler": "ExponentialLR"
+        },
+        "avg_val_loss": 1.4376706406474113,
+        "avg_val_accuracy": 54.37358916478555
+    },
+    {
+        "params": {
+            "dropout": 0,
+            "learning_rate": 0.001,
+            "weight_decay": 0.01,
+            "scheduler": "CosineAnnealingLR"
+        },
+        "avg_val_loss": 1.5945487655699253,
+        "avg_val_accuracy": 53.019187358916476
+    },
+    {
+        "params": {
+            "dropout": 0,
+            "learning_rate": 0.001,
+            "weight_decay": 0.01,
+            "scheduler": "StepLR"
+        },
+        "avg_val_loss": 1.6228215603956153,
+        "avg_val_accuracy": 52.25733634311512
+    },
+    {
+        "params": {
+            "dropout": 0,
+            "learning_rate": 0.001,
+            "weight_decay": 0.01,
+            "scheduler": "ExponentialLR"
+        },
+        "avg_val_loss": 1.43723767091121,
+        "avg_val_accuracy": 54.034988713318285
+    },
+    {
+        "params": {
+            "dropout": 0,
+            "learning_rate": 0.01,
+            "weight_decay": 0,
+            "scheduler": "CosineAnnealingLR"
+        },
+        "avg_val_loss": 1.9052848789308752,
+        "avg_val_accuracy": 51.60835214446952
+    },
+    {
+        "params": {
+            "dropout": 0,
+            "learning_rate": 0.01,
+            "weight_decay": 0,
+            "scheduler": "StepLR"
+        },
+        "avg_val_loss": 1.7890511878899167,
+        "avg_val_accuracy": 53.49887133182844
+    },
+    {
+        "params": {
+            "dropout": 0,
+            "learning_rate": 0.01,
+            "weight_decay": 0,
+            "scheduler": "ExponentialLR"
+        },
+        "avg_val_loss": 1.8513245582580566,
+        "avg_val_accuracy": 53.55530474040633
+    },
+    {
+        "params": {
+            "dropout": 0,
+            "learning_rate": 0.01,
+            "weight_decay": 0.0001,
+            "scheduler": "CosineAnnealingLR"
+        },
+        "avg_val_loss": 1.8697256669402122,
+        "avg_val_accuracy": 52.370203160270876
+    },
+    {
+        "params": {
+            "dropout": 0,
+            "learning_rate": 0.01,
+            "weight_decay": 0.0001,
+            "scheduler": "StepLR"
+        },
+        "avg_val_loss": 1.9178617782890797,
+        "avg_val_accuracy": 52.70880361173815
+    },
+    {
+        "params": {
+            "dropout": 0,
+            "learning_rate": 0.01,
+            "weight_decay": 0.0001,
+            "scheduler": "ExponentialLR"
+        },
+        "avg_val_loss": 1.8467574955097268,
+        "avg_val_accuracy": 52.28555304740407
+    },
+    {
+        "params": {
+            "dropout": 0,
+            "learning_rate": 0.01,
+            "weight_decay": 0.01,
+            "scheduler": "CosineAnnealingLR"
+        },
+        "avg_val_loss": 1.7292822679238662,
+        "avg_val_accuracy": 53.41422121896163
+    },
+    {
+        "params": {
+            "dropout": 0,
+            "learning_rate": 0.01,
+            "weight_decay": 0.01,
+            "scheduler": "StepLR"
+        },
+        "avg_val_loss": 1.840446432254144,
+        "avg_val_accuracy": 52.84988713318285
+    },
+    {
+        "params": {
+            "dropout": 0,
+            "learning_rate": 0.01,
+            "weight_decay": 0.01,
+            "scheduler": "ExponentialLR"
+        },
+        "avg_val_loss": 1.9020124987832137,
+        "avg_val_accuracy": 53.24492099322799
+    },
+    {
+        "params": {
+            "dropout": 0.25,
+            "learning_rate": 0.001,
+            "weight_decay": 0,
+            "scheduler": "CosineAnnealingLR"
+        },
+        "avg_val_loss": 1.3930661694279738,
+        "avg_val_accuracy": 55.30474040632053
+    },
+    {
+        "params": {
+            "dropout": 0.25,
+            "learning_rate": 0.001,
+            "weight_decay": 0,
+            "scheduler": "StepLR"
+        },
+        "avg_val_loss": 1.3867330790630408,
+        "avg_val_accuracy": 55.47404063205418
+    },
+    {
+        "params": {
+            "dropout": 0.25,
+            "learning_rate": 0.001,
+            "weight_decay": 0,
+            "scheduler": "ExponentialLR"
+        },
+        "avg_val_loss": 1.4064593554607459,
+        "avg_val_accuracy": 53.865688487584656
+    },
+    {
+        "params": {
+            "dropout": 0.25,
+            "learning_rate": 0.001,
+            "weight_decay": 0.0001,
+            "scheduler": "CosineAnnealingLR"
+        },
+        "avg_val_loss": 1.394045103873525,
+        "avg_val_accuracy": 54.93792325056433
+    },
+    {
+        "params": {
+            "dropout": 0.25,
+            "learning_rate": 0.001,
+            "weight_decay": 0.0001,
+            "scheduler": "StepLR"
+        },
+        "avg_val_loss": 1.3737993836402893,
+        "avg_val_accuracy": 55.36117381489842
+    },
+    {
+        "params": {
+            "dropout": 0.25,
+            "learning_rate": 0.001,
+            "weight_decay": 0.0001,
+            "scheduler": "ExponentialLR"
+        },
+        "avg_val_loss": 1.3770681832517897,
+        "avg_val_accuracy": 54.091422121896166
+    },
+    {
+        "params": {
+            "dropout": 0.25,
+            "learning_rate": 0.001,
+            "weight_decay": 0.01,
+            "scheduler": "CosineAnnealingLR"
+        },
+        "avg_val_loss": 1.3852597453764506,
+        "avg_val_accuracy": 55.30474040632054
+    },
+    {
+        "params": {
+            "dropout": 0.25,
+            "learning_rate": 0.001,
+            "weight_decay": 0.01,
+            "scheduler": "StepLR"
+        },
+        "avg_val_loss": 1.364977130400283,
+        "avg_val_accuracy": 55.69977426636569
+    },
+    {
+        "params": {
+            "dropout": 0.25,
+            "learning_rate": 0.001,
+            "weight_decay": 0.01,
+            "scheduler": "ExponentialLR"
+        },
+        "avg_val_loss": 1.4015664415700093,
+        "avg_val_accuracy": 53.809255079006775
+    },
+    {
+        "params": {
+            "dropout": 0.25,
+            "learning_rate": 0.01,
+            "weight_decay": 0,
+            "scheduler": "CosineAnnealingLR"
+        },
+        "avg_val_loss": 1.471260575843709,
+        "avg_val_accuracy": 55.332957110609485
+    },
+    {
+        "params": {
+            "dropout": 0.25,
+            "learning_rate": 0.01,
+            "weight_decay": 0,
+            "scheduler": "StepLR"
+        },
+        "avg_val_loss": 1.4714994600840976,
+        "avg_val_accuracy": 56.09480812641083
+    },
+    {
+        "params": {
+            "dropout": 0.25,
+            "learning_rate": 0.01,
+            "weight_decay": 0,
+            "scheduler": "ExponentialLR"
+        },
+        "avg_val_loss": 1.4325538692729813,
+        "avg_val_accuracy": 56.574492099322796
+    },
+    {
+        "params": {
+            "dropout": 0.25,
+            "learning_rate": 0.01,
+            "weight_decay": 0.0001,
+            "scheduler": "CosineAnnealingLR"
+        },
+        "avg_val_loss": 1.5180921368300915,
+        "avg_val_accuracy": 55.191873589164786
+    },
+    {
+        "params": {
+            "dropout": 0.25,
+            "learning_rate": 0.01,
+            "weight_decay": 0.0001,
+            "scheduler": "StepLR"
+        },
+        "avg_val_loss": 1.4420699700713158,
+        "avg_val_accuracy": 55.02257336343115
+    },
+    {
+        "params": {
+            "dropout": 0.25,
+            "learning_rate": 0.01,
+            "weight_decay": 0.0001,
+            "scheduler": "ExponentialLR"
+        },
+        "avg_val_loss": 1.4789941140583585,
+        "avg_val_accuracy": 55.332957110609485
+    },
+    {
+        "params": {
+            "dropout": 0.25,
+            "learning_rate": 0.01,
+            "weight_decay": 0.01,
+            "scheduler": "CosineAnnealingLR"
+        },
+        "avg_val_loss": 1.4645885420697076,
+        "avg_val_accuracy": 55.2765237020316
+    },
+    {
+        "params": {
+            "dropout": 0.25,
+            "learning_rate": 0.01,
+            "weight_decay": 0.01,
+            "scheduler": "StepLR"
+        },
+        "avg_val_loss": 1.4346898022506918,
+        "avg_val_accuracy": 55.75620767494357
+    },
+    {
+        "params": {
+            "dropout": 0.25,
+            "learning_rate": 0.01,
+            "weight_decay": 0.01,
+            "scheduler": "ExponentialLR"
+        },
+        "avg_val_loss": 1.451745898595878,
+        "avg_val_accuracy": 55.784424379232505
+    },
+    {
+        "params": {
+            "dropout": 0.5,
+            "learning_rate": 0.001,
+            "weight_decay": 0,
+            "scheduler": "CosineAnnealingLR"
+        },
+        "avg_val_loss": 1.4357835953789098,
+        "avg_val_accuracy": 53.41422121896162
+    },
+    {
+        "params": {
+            "dropout": 0.5,
+            "learning_rate": 0.001,
+            "weight_decay": 0,
+            "scheduler": "StepLR"
+        },
+        "avg_val_loss": 1.4727387140904153,
+        "avg_val_accuracy": 50.62076749435666
+    },
+    {
+        "params": {
+            "dropout": 0.5,
+            "learning_rate": 0.001,
+            "weight_decay": 0,
+            "scheduler": "ExponentialLR"
+        },
+        "avg_val_loss": 1.5751333236694336,
+        "avg_val_accuracy": 45.54176072234763
+    },
+    {
+        "params": {
+            "dropout": 0.5,
+            "learning_rate": 0.001,
+            "weight_decay": 0.0001,
+            "scheduler": "CosineAnnealingLR"
+        },
+        "avg_val_loss": 1.4348072675721986,
+        "avg_val_accuracy": 52.79345372460496
+    },
+    {
+        "params": {
+            "dropout": 0.5,
+            "learning_rate": 0.001,
+            "weight_decay": 0.0001,
+            "scheduler": "StepLR"
+        },
+        "avg_val_loss": 1.4687278307974339,
+        "avg_val_accuracy": 50.620767494356656
+    },
+    {
+        "params": {
+            "dropout": 0.5,
+            "learning_rate": 0.001,
+            "weight_decay": 0.0001,
+            "scheduler": "ExponentialLR"
+        },
+        "avg_val_loss": 1.5612487856830868,
+        "avg_val_accuracy": 47.770880361173816
+    },
+    {
+        "params": {
+            "dropout": 0.5,
+            "learning_rate": 0.001,
+            "weight_decay": 0.01,
+            "scheduler": "CosineAnnealingLR"
+        },
+        "avg_val_loss": 1.4116350252713477,
+        "avg_val_accuracy": 53.63995485327314
+    },
+    {
+        "params": {
+            "dropout": 0.5,
+            "learning_rate": 0.001,
+            "weight_decay": 0.01,
+            "scheduler": "StepLR"
+        },
+        "avg_val_loss": 1.4930310951811925,
+        "avg_val_accuracy": 50.42325056433408
+    },
+    {
+        "params": {
+            "dropout": 0.5,
+            "learning_rate": 0.001,
+            "weight_decay": 0.01,
+            "scheduler": "ExponentialLR"
+        },
+        "avg_val_loss": 1.529825605984245,
+        "avg_val_accuracy": 47.629796839729124
+    },
+    {
+        "params": {
+            "dropout": 0.5,
+            "learning_rate": 0.01,
+            "weight_decay": 0,
+            "scheduler": "CosineAnnealingLR"
+        },
+        "avg_val_loss": 1.486997339874506,
+        "avg_val_accuracy": 54.7686230248307
+    },
+    {
+        "params": {
+            "dropout": 0.5,
+            "learning_rate": 0.01,
+            "weight_decay": 0,
+            "scheduler": "StepLR"
+        },
+        "avg_val_loss": 1.4701707437634468,
+        "avg_val_accuracy": 53.386004514672685
+    },
+    {
+        "params": {
+            "dropout": 0.5,
+            "learning_rate": 0.01,
+            "weight_decay": 0,
+            "scheduler": "ExponentialLR"
+        },
+        "avg_val_loss": 1.4591931775212288,
+        "avg_val_accuracy": 53.386004514672685
+    },
+    {
+        "params": {
+            "dropout": 0.5,
+            "learning_rate": 0.01,
+            "weight_decay": 0.0001,
+            "scheduler": "CosineAnnealingLR"
+        },
+        "avg_val_loss": 1.479043208594833,
+        "avg_val_accuracy": 52.99097065462754
+    },
+    {
+        "params": {
+            "dropout": 0.5,
+            "learning_rate": 0.01,
+            "weight_decay": 0.0001,
+            "scheduler": "StepLR"
+        },
+        "avg_val_loss": 1.4632403893130166,
+        "avg_val_accuracy": 54.06320541760722
+    },
+    {
+        "params": {
+            "dropout": 0.5,
+            "learning_rate": 0.01,
+            "weight_decay": 0.0001,
+            "scheduler": "ExponentialLR"
+        },
+        "avg_val_loss": 1.4649089904768127,
+        "avg_val_accuracy": 54.909706546275395
+    },
+    {
+        "params": {
+            "dropout": 0.5,
+            "learning_rate": 0.01,
+            "weight_decay": 0.01,
+            "scheduler": "CosineAnnealingLR"
+        },
+        "avg_val_loss": 1.4735558426805906,
+        "avg_val_accuracy": 54.853273137697514
+    },
+    {
+        "params": {
+            "dropout": 0.5,
+            "learning_rate": 0.01,
+            "weight_decay": 0.01,
+            "scheduler": "StepLR"
+        },
+        "avg_val_loss": 1.4304429947265556,
+        "avg_val_accuracy": 54.542889390519186
+    },
+    {
+        "params": {
+            "dropout": 0.5,
+            "learning_rate": 0.01,
+            "weight_decay": 0.01,
+            "scheduler": "ExponentialLR"
+        },
+        "avg_val_loss": 1.4344132037035058,
+        "avg_val_accuracy": 54.853273137697514
+    }
+]

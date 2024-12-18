@@ -7,7 +7,7 @@ from losses.losses import CrossEntropy
 import json
 
 # Initialize random seed
-seed = 32
+seed = 30026
 torch.manual_seed(seed)
 torch.cuda.manual_seed(seed)
 
@@ -45,7 +45,7 @@ best_params, results = k_fold_cross_validation(
     device,
     k_folds=k_folds,
     lambda_penalty=0.0,
-    seed=32,
+    seed=seed,
     cross_validation_on_loss=True,
     verbose=True
 )
@@ -57,3 +57,5 @@ with open(results_file, 'w') as f:
 best_file = 'best_results'
 with open(best_file, 'w') as f:
     json.dump(best_params, f, indent=4)
+
+# Now run and save model with best parameters
