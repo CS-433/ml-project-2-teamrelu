@@ -12,7 +12,7 @@ from trainers.training_graphs import plot_training_results
 from models.static_models.xgboost_model import xgb_training
 
 
-def static_training(num_classes, static_params, dataloader_train, dataloader_test, verbose, device, seed):
+def static_training(num_classes, static_params, dataloader_train, dataloader_test, verbose, device):
 
     # Set embedding dimensions based on json parameter
     if static_params["long_embeddings"]:

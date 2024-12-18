@@ -11,7 +11,7 @@ from trainers.training_graphs import plot_training_results
 from configs.dataloaders import create_data_loaders
 
 
-def dynamic_training(num_features, num_classes, num_timesteps, embedding_dim, dynamic_params, static_model, dataloader_train, dataloader_test, verbose, device, seed):
+def dynamic_training(num_features, num_classes, num_timesteps, embedding_dim, dynamic_params, static_model, dataloader_train, dataloader_test, verbose, device):
 
     # Inizialize model: 0 for ModulableLSTMDynamicModel, 1 for TCNDynamicModel, 2 NaiveModel, 3 SimpleModel
     if dynamic_params["model_type"] == 0:
