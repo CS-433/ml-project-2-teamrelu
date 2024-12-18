@@ -15,7 +15,7 @@ from utils.training_graphs import plot_training_results
 from configs.dataloaders import create_data_loaders
 
 # Initialize random seed
-seed = 32
+seed = 30026
 torch.manual_seed(seed)
 torch.cuda.manual_seed(seed)
 
@@ -24,7 +24,7 @@ num_classes = 15
 num_timesteps = 5
 # Define hyperparameters
 weight_decay = 1e-4
-num_epochs = 2
+num_epochs = 100
 patience = 5
 batch_size = 32
 static_learnable = False
