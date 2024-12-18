@@ -17,14 +17,17 @@ output_static_path = os.path.join(current_dir, '../datasets/yORF_localizations.c
 output_dynamic_path = os.path.join(current_dir, '../datasets/dynamic_localizations.csv')
 sheet_names_concentration = ["TL - Data", "TE - Data"]
 output_interaction_matrix = os.path.join(current_dir, '../datasets/Interaction_matrix.csv')
-embeddings_path = os.path.join(current_dir, '../datasets/yORF_embeddings.csv')
-ext_embeddings_path = os.path.join(current_dir, '../datasets/yORF_extrem_embeddings.csv')
+embeddings_path = os.path.join(current_dir, '../datasets/yORF_embeddings_640.csv')
+ext_embeddings_path = os.path.join(current_dir, '../datasets/yORF_extrem_embeddings_640.csv')
+ext_sequences_path = os.path.join(current_dir, '../datasets/yORF_extrem_sequences.csv')
 output_concentrationTE = os.path.join(current_dir, '../datasets/TE_levels.csv')
 output_concentrationTL = os.path.join(current_dir,'../datasets/TL_levels.csv')
 interaction_matrix_path = os.path.join(current_dir,'../datasets/The_Yeast_Interactome_Edges.csv')
 interaction_matrix_with_TE = os.path.join(current_dir,'../datasets/interaction_matrix_TE.csv')
 interaction_matrix_with_TL = os.path.join(current_dir,'../datasets/interaction_matrix_TL.csv')
 interaction_matrix_without_concentrations = os.path.join(current_dir,'../datasets/interaction_matrix_without_concentrations.csv')
+final_dataset_dyn_with_TE =  os.path.join(current_dir,'../datasets/final_dataset_dyn_with_te.csv')
+final_dataset_dyn_with_TL =  os.path.join(current_dir,'../datasets/final_dataset_dyn_with_tl.csv')
 final_dataset_dyn =  os.path.join(current_dir,'../datasets/final_dataset_dyn.csv')
 
 # Path in which save the figures
@@ -49,9 +52,13 @@ create_correlation_scores(output_interaction_matrix, output_dynamic_path, output
 # Create the dataset containing the informations about the interactions : WITHOUT CONCENTRATIONS DATA
 create_correlation_scores(output_interaction_matrix, output_dynamic_path, False, interaction_matrix_without_concentrations, top_n=10, n_classes=15, null_row='zeros')
 
-# Create the final dynamic dataset
-#final_dynamic_dataset(output_dynamic_path, embeddings_path, ext_embeddings_path, output_concentrationTE, output_concentrationTL, output_static_path, output_interaction_matrix, final_dataset_dyn)
+# Create the dataset with the extremities
+create_extrem_sequences(output_sequences_path, ext_sequences_path, num = 20)
 
+# Create the final dynamic dataset
+final_dynamic_dataset(output_dynamic_path, embeddings_path, ext_sequences_path, output_concentrationTE, output_concentrationTL, output_static_path, interaction_matrix_with_TE, final_dataset_dyn_with_TE)
+final_dynamic_dataset(output_dynamic_path, embeddings_path, ext_sequences_path, output_concentrationTE, output_concentrationTL, output_static_path, interaction_matrix_with_TL, final_dataset_dyn_with_TL)
+final_dynamic_dataset(output_dynamic_path, embeddings_path, ext_sequences_path, output_concentrationTE, output_concentrationTL, output_static_path, interaction_matrix_without_concentrations, final_dataset_dyn)
 
 # Generation of plots
 plot_stationary_proteins(dynamic_dataset)

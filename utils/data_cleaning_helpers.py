@@ -251,6 +251,27 @@ def datasets_creation(file_path, sheet_names, proteins_path, output_sequences_pa
 
 
 
+def create_extrem_sequences(file_path, output_file_path, num = 20):
+    """
+    Create a dataset which contains the yORFs and the first and last 'num' amino acids of the sequences
+    
+    Args:
+        file_path : path (str) to a file containing the yORFs and the sequences of amino acids
+        output_file_path : path (str) in which save the pandas DataFrame generated
+        num : number of amino acids 
+        
+    Returns:
+        data : pandas DataFrame containing the yORFs and the first and last 'num' amino acids of the sequences
+    """
+    df = pd.read_csv(file_path)
+    data = ((seq[:num], seq[-num:]) for seq in df.iloc[:, -1])
+    data_extremities=pd.DataFrame(data, columns = ["beginning", "end"])
+    data_extremities.insert(0, "yORF", df.iloc[:,0])
+    create_csv(data_extremities, output_file_path)
+    return data_extremities
+    
+
+
 def add_sequences(data, proteins):
     """
     Add the protein sequences to the dataset
