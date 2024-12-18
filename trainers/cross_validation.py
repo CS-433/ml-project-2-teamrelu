@@ -139,6 +139,7 @@ def k_fold_cross_validation_dynamic(
     static_model_class,
     dynamic_model_class,
     dataset,
+    criterion,
     parameter_grid,
     static_params,
     num_epochs,
@@ -219,7 +220,7 @@ def k_fold_cross_validation_dynamic(
             
             _, _, _, _ = run_training(
                 model=static_model,
-                criterion=static_params['criterion'],
+                criterion=criterion,
                 optimizer=static_optimizer,
                 scheduler=static_scheduler,
                 lambda_penalty=0,
@@ -256,7 +257,7 @@ def k_fold_cross_validation_dynamic(
             # Train and validate the model using run_training
             _, _, val_loss, val_acc = run_training(
                 model=dynamic_model,
-                criterion=params['criterion'],
+                criterion=CrossEntropyWithTemporalSmoothness,
                 optimizer=optimizer,
                 scheduler=scheduler,
                 lambda_penalty= params['lambda_penalty'],

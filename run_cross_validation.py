@@ -76,7 +76,6 @@ parameter_grid = {
     "learning_rate": [0.001, 0.01],
     "weight_decay": [0.01],
     "scheduler": ['StepLR'],
-    "criterion": [CrossEntropyWithTemporalSmoothness],
     "lambda_penalty": [0, 1e-5, 1e-2],
     "static_learnable": [True, False],
     "hidden_size": [32, 64]
@@ -87,6 +86,7 @@ best_params, results = k_fold_cross_validation_dynamic(
     StaticModelMultibranch,
     LSTMDynamicModel,
     data,
+    CrossEntropyWithTemporalSmoothness,
     parameter_grid,
     best_params_static,
     num_epochs,
