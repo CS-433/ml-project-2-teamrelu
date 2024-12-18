@@ -478,7 +478,7 @@ def create_dynamic_tensor(interaction_data, te_levels, tl_levels, use_concentrat
         te_levels_tensor = te_levels_tensor.unsqueeze(-1)
         tl_levels_tensor = torch.tensor(tl_levels.values, dtype=torch.float32)
         tl_levels_tensor = tl_levels_tensor.unsqueeze(-1)
-    result_tensor = torch.cat((result_tensor, te_levels_tensor, tl_levels_tensor), dim=2)
+        result_tensor = torch.cat((result_tensor, te_levels_tensor, tl_levels_tensor), dim=2)
 
     return result_tensor
     
