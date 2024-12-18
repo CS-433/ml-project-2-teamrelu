@@ -17,6 +17,21 @@ class ModulableLSTMDynamicModel(nn.Module):
 
     def __init__(self, static_model, static_learnable=False, num_timesteps=5, num_classes=15, num_features = 34, hidden_size = 64, num_layers=2, dropout=0.2, no_concentration=False, no_interaction=False, no_static=False):
         super(ModulableLSTMDynamicModel, self).__init__()
+        """
+        Class constructor
+            Args:
+                static_model (nn.Module): Pretrained static model providing global embeddings
+                static_learnable (bool): Whether to allow fine-tuning of the static model
+                num_timesteps (int): Number of timesteps in the dynamic data
+                num_classes (int): Number of target classes for the output
+                num_features (int): Number of features in the input to the LSTM
+                hidden_size (int): Size of the hidden state in the LSTM
+                num_layers (int): Number of layers in the LSTM
+                dropout (float): Dropout probability for LSTM and attention layers
+                no_concentration (bool): Whether to exclude concentration-related features
+                no_interaction (bool): Whether to exclude interaction-related features
+                no_static (bool): Whether to exclude static-related features
+        """
 
         # Define attributes
         self.StaticModel = static_model

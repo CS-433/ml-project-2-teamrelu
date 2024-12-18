@@ -5,14 +5,15 @@ import pandas as pd
 # You need "pip install fair-esm" and "pip install fairscale"
 
 def create_protein_embeddings(input_file_path, output_file_path, chunk_size=5, small_embedder=False, verbose=False):
-    """ Generate and save protein sequence embeddings in chunks
+    """ 
+    Generate and save protein sequence embeddings in chunks
 
     Parameters:
-    - input_file_path: Path to the input CSV file containing yORF and sequences
-    - output_file_path: Path to save the output CSV file
-    - chunk_size: Number of sequences to process in each chunk
-    - small_embedder: Whether to use a smaller ESM-2 model for faster processing (320-dim). If false it uses a 640-dim embedding
-    - verbose: Whether to print progress messages
+    input_file_path (str): Path to the input CSV file containing yORF and sequences
+    output_file_path (str): Path to save the output CSV file
+    chunk_size (int): Number of sequences to process in each chunk
+    small_embedder (bool): Whether to use a smaller ESM-2 model for faster processing (320-dim). If false it uses a 640-dim embedding
+    verbose (bool): Whether to print progress messages
 
     Returns: None
     """
@@ -59,15 +60,15 @@ def create_extremities_embeddings(input_file_path, output_file_path, extremities
     Generate and save embeddings for the first and last residues of sequences.
 
     Parameters:
-    - input_file_path: Path to the input CSV file containing sequences
-    - output_file_path: Path to save the output CSV file
-    - extremities_len: Length of the sequence extremities to extract
-    - chunk_size: Number of sequences to process in each chunk
-    - small_embedder: Whether to use a smaller ESM-2 model for faster processing (320-dim). If false it uses a 640-dim embedding
-    - verbose: Whether to print progress messages
+        input_file_path (str): Path to the input CSV file containing sequences
+        output_file_path (str): Path to save the output CSV file
+        extremities_len (int): Length of the sequence extremities to extract
+        chunk_size (int): Number of sequences to process in each chunk
+        small_embedder (bool): Whether to use a smaller ESM-2 model for faster processing (320-dim). If false it uses a 640-dim embedding
+        verbose (bool): Whether to print progress messages
 
     Returns: None
-    """
+"""
 
     # Load ESM-2 model
     if not small_embedder:
@@ -121,15 +122,15 @@ def get_chunk_embeddings(data, model, alphabet, batch_converter, final_idx):
     """ Extract sequence embeddings from a chunk of data using the ESM-2 model
 
     Parameters:
-    - data: List of tuples containing (label, sequence)
-    - model: Pretrained ESM-2 model
-    - alphabet: Alphabet used by the model
-    - batch_converter: Function to convert data into model inputs
-    - final_idx: Index of the layer to extract embeddings from
+        data (list): List of tuples containing (label, sequence)
+        model (nn.Module): Pretrained ESM-2 model
+        alphabet (Alphabet): Alphabet used by the model
+        batch_converter (function): Function to convert data into model inputs
+        final_idx (int): Index of the layer to extract embeddings from
 
     Returns:
-    - batch_labels: List of sequence labels
-    - sequence_representations: List of tensor embeddings for each sequence
+        batch_labels (list): List of sequence labels
+        sequence_representations (list): List of tensor embeddings for each sequence
     """
 
     batch_labels, _ , batch_tokens = batch_converter(data)
@@ -148,20 +149,20 @@ def get_chunk_embeddings(data, model, alphabet, batch_converter, final_idx):
 
 # Helper function to save embeddings of a chunk of data
 def save_chunk_embeddings(data, model, alphabet, batch_converter, final_idx, output_file_path, mode, emb_len):
-    """ Save sequence embeddings for a chunk of data to a CSV file
+    """
+    Save sequence embeddings for a chunk of data to a CSV file
 
     Parameters:
-    - data: List of tuples containing (label, sequence)
-    - model: Pretrained ESM-2 model
-    - alphabet: Alphabet used by the model
-    - batch_converter: Function to convert data into model inputs
-    - final_idx: Index of the layer to extract embeddings from
-    - output_file_path: Path to save the output CSV file
-    - mode: Write ('w') or append ('a') mode for the CSV file
-    - emb_len: Length of the embedding vectors
+        data (list): List of tuples containing (label, sequence)
+        model (nn.Module): Pretrained ESM-2 model
+        alphabet (Alphabet): Alphabet used by the model
+        batch_converter (function): Function to convert data into model inputs
+        final_idx (int): Index of the layer to extract embeddings from
+        output_file_path (str): Path to save the output CSV file
+        mode (str): Write ('w') or append ('a') mode for the CSV file
+        emb_len (int): Length of the embedding vectors
 
     Returns: None
-
     """
 
     batch_labels, sequence_representation = get_chunk_embeddings(data, model, alphabet, batch_converter, final_idx)
@@ -181,21 +182,21 @@ def save_chunk_embeddings(data, model, alphabet, batch_converter, final_idx, out
 
 
 def save_chunk_extremities(begin, end, model, alphabet, batch_converter, final_idx, output_file_path, mode, emb_len):
-    """ Save extremities sequence embeddings for a chunk of data to a CSV file
+    """
+    Save extremities sequence embeddings for a chunk of data to a CSV file
 
     Parameters:
-    - begin: List of tuples containing (label, sequence)
-    - end: List of tuples containing (label, sequence)
-    - model: Pretrained ESM-2 model
-    - alphabet: Alphabet used by the model
-    - batch_converter: Function to convert data into model inputs
-    - final_idx: Index of the layer to extract embeddings from
-    - output_file_path: Path to save the output CSV file
-    - mode: Write ('w') or append ('a') mode for the CSV file
-    - emb_len: Length of the embedding vectors
+        begin (list): List of tuples containing (label, sequence) for the beginning part of the sequence
+        end (list): List of tuples containing (label, sequence) for the end part of the sequence
+        model (nn.Module): Pretrained ESM-2 model
+        alphabet (Alphabet): Alphabet used by the model
+        batch_converter (function): Function to convert data into model inputs
+        final_idx (int): Index of the layer to extract embeddings from
+        output_file_path (str): Path to save the output CSV file
+        mode (str): Write ('w') or append ('a') mode for the CSV file
+        emb_len (int): Length of the embedding vectors
 
     Returns: None
-
     """
     
     batch_labels, begin_representation = get_chunk_embeddings(begin, model, alphabet, batch_converter, final_idx)

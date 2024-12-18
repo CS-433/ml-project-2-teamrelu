@@ -5,15 +5,19 @@ from configs.dataset_class import ProteinDataset, create_vocabulary
 from utils.data_cleaning_helpers import create_dynamic_tensor
 
 def create_data_loaders(data_train, data_test, batch_size):
-    """ Create train and test dataloaders
-    Args:
-        data: DataFrame with all data
-        batch_size: size of each batch
-        seed: random generator seed
-    Returns:
-        dataloader_train: dataloader for training set
-        dataloader_test: dataloader for test set
     """
+    Create train and test dataloaders
+
+    Args:
+        data_train (pd.DataFrame): DataFrame containing training data
+        data_test (pd.DataFrame): DataFrame containing test data
+        batch_size (int): Size of the batches to be loaded
+
+    Returns:
+        dataloader_train (torch.utils.data.DataLoader): Dataloader for the training set
+        dataloader_test (torch.utils.data.DataLoader): Dataloader for the test set
+    """
+
     # Handle dynamic data
     dynamic_data_train = create_dynamic_tensor(data_train.iloc[:, 653:728], data_train.iloc[:, 648:653], data_train.iloc[:,643:648])
     dynamic_data_test = create_dynamic_tensor(data_test.iloc[:, 653:728], data_test.iloc[:, 648:653], data_test.iloc[:,643:648])

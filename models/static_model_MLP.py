@@ -2,7 +2,8 @@ import torch
 import torch.nn as nn
 
 class StaticModelMLP(nn.Module):
-    """ Model based on a MLP that takes as input the proteins embeddings and returns predictions on the classes
+    """ 
+    Model based on a MLP that takes as input the proteins embeddings and returns predictions on the classes
 
     Attributes:
         input_dim (int): Dimension of the input embeddings
@@ -14,7 +15,8 @@ class StaticModelMLP(nn.Module):
     """
 	
     def __init__(self, input_size=640, num_classes=15):
-        """ Class constructor
+        """ 
+        Class constructor
         Args:
             input_size (int): dimension of the embeddings given as input
             num_classes (int): number of classes for the prediction
@@ -36,7 +38,8 @@ class StaticModelMLP(nn.Module):
 
 
     def forward(self, x):
-        """ Forward pass of the model
+        """ 
+        Forward pass of the model
 
         Args:
             x (torch.Tensor): Input tensor of shape (batch_size, input_size)
@@ -48,7 +51,8 @@ class StaticModelMLP(nn.Module):
         return self.inner(x)
 
     def initialize_weights(self):
-        """ Applies initialization for weights, with the following algorithms:
+        """ 
+        Applies initialization for weights, with the following algorithms:
             - He (Kaiming) uniform initialization for Linear layers
             - Zero initialization for biases
         """

@@ -3,7 +3,7 @@ import torch.nn as nn
 import pandas as pd
 from trainers.cross_validation import k_fold_cross_validation_static, k_fold_cross_validation_dynamic
 from models.static_model_multibranch import StaticModelMultibranch
-from models.modulable_lstm_model import LSTMDynamicModel
+from models.lstm_model import LSTMDynamicModel
 from losses.losses import CrossEntropy, CrossEntropyWithLasso, CrossEntropyWithTemporalSmoothness
 import json
 
@@ -25,7 +25,7 @@ test_size = 0.2 # for train/test splitting
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Load data
-file_path = 'final_dataset.csv'
+file_path = 'datasets/final_dataset_dyn_with_tl.csv'
 data = pd.read_csv(file_path)
 '''
 parameter_grid = {

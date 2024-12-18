@@ -2,7 +2,8 @@ import torch
 import torch.nn as nn
 
 class StaticModelMultibranch(nn.Module):
-    """ Model based on MLP and Transformers that takes as input the proteins embeddings and the ending parts 
+    """ 
+    Model based on MLP and Transformers that takes as input the proteins embeddings and the ending parts 
         of their sequences (mapped to int sequences with a vocabulary) and returns predictions on the classes. 
 
     Attributes:
@@ -16,11 +17,13 @@ class StaticModelMultibranch(nn.Module):
     Methods:
         process_sequence: Processes extremities sequences embeddings using the character-level embedding and transformer
         forward: forward pass of the model
-        init_weights: Applies weight initialization to all layers of the model
+        initialize_weights: Applies weight initialization to all layers of the model
     """
 
     def __init__(self, num_classes=15, embedding_dim=640, extremities_dim=20, char_vocab_size=20, char_embed_dim=16, intermediate_dim=32, dropout=0.3):
-        """ Class constructor
+        """ 
+        Class constructor
+
         Args:
             num_classes (int): Number of output classes for the classification.
             embedding_dim (int): Dimension of the global protein embedding
@@ -68,7 +71,8 @@ class StaticModelMultibranch(nn.Module):
         )
 
     def process_sequence(self, x):
-        """ Processes sequence extremities using character-level embeddings and the transformer encoder.
+        """ 
+        Processes sequence extremities using character-level embeddings and the transformer encoder.
 
         Args:
             x (torch.Tensor): Input tensor of shape (batch_size, seq_length) representing the sequence.
@@ -110,7 +114,7 @@ class StaticModelMultibranch(nn.Module):
         output = self.fc(combined)
         return output
 
-    def init_weights(self):
+    def initialize_weights(self):
         """ Applies initialization for weights, with the following algorithms:
         - He initialization for Linear layers.
         - Xavier initialization for Transformer attention layers.

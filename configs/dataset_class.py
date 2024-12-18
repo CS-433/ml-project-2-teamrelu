@@ -4,7 +4,8 @@ import pandas as pd
 from torch.utils.data import Dataset
 
 class ProteinDataset(Dataset):
-    """ Dataset class for handling proteins dynamic and static data
+    """ 
+    Dataset class for handling proteins dynamic and static data
 
     Attributes:
         global_embeddings (torch.Tensor): Tensor containing global embeddings for each protein
@@ -18,7 +19,8 @@ class ProteinDataset(Dataset):
         __getitem__ : Returns the data point at a specific index (idx), including dynamic data, embeddings, start and end sequences, and labels
     """
     def __init__(self, dynamic_data, global_embeddings, start_sequences, end_sequences, static_labels, dynamic_labels, vocabulary):
-        """ Class constructor
+        """ 
+        Class constructor
 
         Args:
             dynamic_data (torch tensor): 3D torch tensor containing the dynamic data for each protein.

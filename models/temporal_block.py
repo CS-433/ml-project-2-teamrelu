@@ -2,24 +2,39 @@ import torch
 import torch.nn as nn
 
 class TemporalBlock(nn.Module):
-    """ Temporal Convolution Network Class for dynamic feature extraction which takes as input data in the form [batch_size, timesteps, features]
+    """ 
+    Temporal Convolution Network Class for dynamic feature extraction which takes as input data in the form [batch_size, timesteps, features]
+
     Args:
-        input_dim: number of features
-        intermediate_dim: number of channels in the hidden layer
-        output_dim: number of output features (in our case equal to number of classes for classification)
-        kernel_size: size of convolutional layers
-        stride: how far the kernel moves across the input
-        dilation_1: spacing between kernel elements in first layer
-        dilation_2: spacing between kernel elements in second layer
-        dropout: dropout probability (regularization technique)
+        input_dim (int): Number of features
+        intermediate_dim (int): Number of channels in the hidden layer
+        output_dim (int): Number of output features (in our case equal to number of classes for classification)
+        kernel_size (int): Size of convolutional layers
+        stride (int): How far the kernel moves across the input
+        dilation_1 (int): Spacing between kernel elements in first layer
+        dilation_2 (int): Spacing between kernel elements in second layer
+        dropout (float): Dropout probability (regularization technique)
 
     Methods:
-		initialize_weights: He weights initialization for all the layers
-        forward: usual forward pass of neural networks
+        initialize_weights() -> None: He weights initialization for all the layers
+        forward(x: torch.Tensor) -> torch.Tensor: Usual forward pass of neural networks
     """
 
     def __init__(self, input_dim=17, intermediate_dim=15, output_dim=15, kernel_size=3, stride=1, dilation_1 = 1, dilation_2 = 2, dropout=0.2):
         super(TemporalBlock, self).__init__()
+        """
+        Class constructor
+
+        Args:
+            input_dim (int): Number of features
+            intermediate_dim (int): Number of channels in the hidden layer
+            output_dim (int): Number of output features (in our case equal to number of classes for classification)
+            kernel_size (int): Size of convolutional layers
+            stride (int): stride for convolutions
+            dilation_1 (int): dilation for first convolutional layer
+            dilation_2 (int): dilation for second convolutional layer
+            dropout (float): Dropout probability
+        """
 
         # 2 layers of TCN
         self.conv1 = nn.Conv1d(input_dim, intermediate_dim, kernel_size, stride=stride, padding=(kernel_size-1)*dilation_1, dilation=dilation_1)
@@ -33,6 +48,11 @@ class TemporalBlock(nn.Module):
         self.dropout2 = nn.Dropout(dropout)
 
     def initialize_weights(self):
+        """
+            Initializes weights of the layers using He initialization.
+            Applies He initialization to Conv1D layers 
+            and sets biases to zero.
+        """
         for layer in self.modules():
           if isinstance(layer, (nn.Conv2d, nn.Linear)):
             nn.init.kaiming_normal_(layer.weight, mode='fan_out', nonlinearity='relu')

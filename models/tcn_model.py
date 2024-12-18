@@ -3,20 +3,34 @@ import torch.nn as nn
 from models.temporal_block import TemporalBlock
 
 class TCNDynamicModel(nn.Module):
-    """ DynamicalModel construced with static and TCN models
-    Args:
-        static_model: model created for the static localization problem
-        tcn_model: model created for dynamical data feature extraction
-        static_learnable: boolean for deciding if static model weights have to be frozen
-        timesteps: number of timesteps in out problem
-        num_classes: number of classes for classification
-
-    Methods:
-		    initialize_weights: He weights initialization for all the layers
-        forward: usual forward pass of neural networks
+    """ 
+      DynamicalModel construced with static and TCN models
+      
+      Attributes:
+        input_dim (int): Dimension of the input embeddings
+        inner (nn.Sequential): Multilayer Perceptron
+        num_timesteps (int): Number of timesteps in the dynamic data
+        TemporalBlock (nn.Module): TCN model for dynamic data feature extraction
+        StaticModel (nn.Module): Model created for the static localization problem
+        StaticLearnable (bool): Whether to allow fine-tuning of the static model
+    
+      Methods:
+		    forward : forward pass of the method
+        initialize_weights: applies He initialization to all the linear layers
+    
     """
     def __init__(self, static_model, tcn_model, static_learnable=False, num_timesteps=5, num_classes=15):
         super(TCNDynamicModel, self).__init__()
+        """
+        Class constructor
+
+        Args:
+          static_model (nn.Module): Model created for the static localization problem
+          tcn_model (nn.Module): Model created for dynamical data feature extraction
+          static_learnable (bool): Whether to allow fine-tuning of the static model
+          num_timesteps (int): Number of timesteps in the dynamic data
+          num_classes (int): Number of classes for classification
+        """
 
         self.num_timesteps = num_timesteps
         self.TemporalBlock = tcn_model
@@ -34,6 +48,11 @@ class TCNDynamicModel(nn.Module):
         )
 
     def initialize_weights(self):
+      """
+      Initializes weights of the CombinationLayer using He initialization.
+      Applies He initialization to weights of Conv2d and Linear layers 
+      and sets biases to zero.
+      """
       for layer in self.CombinationLayer.modules():
         if isinstance(layer, (nn.Conv2d, nn.Linear)):
           nn.init.kaiming_normal_(layer.weight, mode='fan_out', nonlinearity='relu')
@@ -42,14 +61,17 @@ class TCNDynamicModel(nn.Module):
 
     def forward(self, dynamic_data, global_embeddings, ind_start_seq, ind_end_seq):
         """ 
+        Forward pass
+
         Args:
-            dynamic_data: dynamic features
-            global_embeddings: embeddings made with ESM
+            dynamic_data: dynamic features represented as a tensor
+            global_embeddings: embeddings generated using ESM for each protein
             ind_start_seq: first 20 amino acids of each sequence
             ind_end_seq: last 20 amino acids of each sequence
+
         Returns:
-            torch.Tensor: Output tensor of shape (batch_size, timesteps, num_classes), 
-                          containing the predicted class scores for each sequence position
+            torch.Tensor: Output tensor of shape (batch_size, timesteps, num_classes) 
+                          containing predicted class scores for each sequence position
         """
         # Static submodule
         if self.StaticLearnable == False:

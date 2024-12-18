@@ -7,14 +7,13 @@ from inspect import signature
 def validate(model, dataloader_test, device):
     """ Validation loop
         Args:
-            model: PyTorch model to be evaluated
-            dataloader_test: DataLoader object that provides an iterable over the test dataset
-            device: the device (CPU or GPU) on which the model and data are loaded
-            criterion: loss function used to compute the validation loss
-            lambda_penalty: loss regularization coefficient (depending on loss used)
+            model (nn.Module): PyTorch model to be evaluated
+            dataloader_test (torch.utils.data.DataLoader): DataLoader object that provides an iterable over the test dataset
+            device (str): the device (CPU or GPU) on which the model and data are loaded
+
         Returns:
-            test_loss: epoch loss on test set
-            test_accuracy: epoch accuracy on test set
+            test_loss (float): epoch loss on test set
+            test_accuracy (float): epoch accuracy on test set
     """
     # Set model to evaluation mode
     model.eval()
@@ -62,23 +61,26 @@ def validate(model, dataloader_test, device):
     return test_loss, test_accuracy
 
 def run_training(model, criterion, optimizer, scheduler, lambda_penalty, dataloader_train, dataloader_test, num_epochs, patience, device, verbose):
-    """Training loop
-        Args:
-            model: PyTorch model to be evaluated
-            criterion: loss function used to compute the validation loss
-            optimizer: optimizer used to update the model's parameters
-            scheduler: learning rate scheduler to adjust the learning rate during training
-            lambda_penalty: loss regularization coefficient (depending on loss used)
-            dataloader_train: DataLoader object that provides an iterable over the training dataset
-            dataloader_test: DataLoader object that provides an iterable over the test dataset
-            num_epochs: total number of epochs (full passes over the training dataset)
-            patience: number of consecutive epochs allowed for test loss to not improve before stopping the training
-            device: the device (CPU or GPU) on which the model and data are loaded
-        Return:
-            train_loss_history: list with train loss for each epoch
-            train_accuracy_history: list with train accuracy for each epoch
-            test_loss_history: list with test loss for each epoch
-            test_accuracy_history: list with test accuracy for each epoch
+    """
+    Training loop
+
+    Args:
+        model (nn.Module): PyTorch model to be trained
+        criterion (Callable[[torch.Tensor, torch.Tensor], torch.Tensor]): Loss function used to compute the loss
+        optimizer (torch.optim.Optimizer): Optimizer used to update the model's parameters
+        scheduler (torch.optim.lr_scheduler._LRScheduler): Learning rate scheduler to adjust the learning rate during training
+        lambda_penalty (float): Loss regularization coefficient (depending on loss used)
+        dataloader_train (torch.utils.data.DataLoader): DataLoader object that provides an iterable over the training dataset
+        dataloader_test (torch.utils.data.DataLoader): DataLoader object that provides an iterable over the test dataset
+        num_epochs (int): Total number of epochs (full passes over the training dataset)
+        patience (int): Number of consecutive epochs allowed for test loss to not improve before stopping the training
+        device (str): The device (CPU or GPU) on which the model and data are loaded
+
+    Returns:
+        train_loss_history (List[float]): List with train loss for each epoch
+        train_accuracy_history (List[float]): List with train accuracy for each epoch
+        test_loss_history (List[float]): List with test loss for each epoch
+        test_accuracy_history (List[float]): List with test accuracy for each epoch
     """
     # Ensure model is on the right device and set for training
     model = model.to(device)

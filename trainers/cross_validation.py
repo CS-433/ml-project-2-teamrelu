@@ -25,25 +25,24 @@ def k_fold_cross_validation_static(
     Performs k-fold cross-validation.
 
     Args:
-        model_class: PyTorch model class for static problem (not an instance)
-        dataset: PyTorch Dataset object
-        criterion: Loss function
-        parameter_grid: Dictionary with hyperparameters and their possible values
-        num_epochs: Number of epochs for each fold
-        patience: number of consecutive epochs allowed for test loss to not improve before stopping the training
-        batch_size: number of samples in each batch
-        device: Device to train on ('cuda' or 'cpu')
-        k_folds: Number of folds for cross-validation
-        lambda_penalty: Regularization coefficient
-        seed: random number generator seed
-        cross_validation_on_loss: boolean to decide on which metric to do cross validation
-        verbose: Print training progress
+        model_class (Type[nn.Module]): PyTorch model class for static problem (not an instance)
+        dataset (torch.utils.data.Dataset): PyTorch Dataset object
+        criterion (Callable[[torch.Tensor, torch.Tensor], torch.Tensor]): Loss function
+        parameter_grid (Dict[str, List[Any]]): Dictionary with hyperparameters and their possible values
+        num_epochs (int): Number of epochs for each fold
+        patience (int): Number of consecutive epochs allowed for test loss to not improve before stopping the training
+        batch_size (int): Number of samples in each batch
+        device (str): Device to train on ('cuda' or 'cpu')
+        k_folds (int): Number of folds for cross-validation
+        seed (int): Random number generator seed
+        cross_validation_on_loss (bool): Boolean to decide on which metric to do cross-validation
+        verbose (bool): Print training progress
 
     Returns:
-        best_params: Dictionary of the best hyperparameters
-        results: List of performance results for all hyperparameter combinations
+        Tuple[Dict[str, Any], List[float]]:
+            - best_params (Dict[str, Any]): Dictionary of the best hyperparameters
+            - results (List[float]): List of performance results for all hyperparameter combinations
     """
-
     kfold = KFold(n_splits=k_folds, shuffle=True, random_state=seed)
     all_params = list(itertools.product(*parameter_grid.values()))
     param_names = list(parameter_grid.keys())
@@ -155,24 +154,25 @@ def k_fold_cross_validation_dynamic(
     Performs k-fold cross-validation.
 
     Args:
-        static_model_class: PyTorch model class for static problem (not an instance)
-        dynamic_model_class: PyTorch model class fro dynamic problem (not an instance)
-        dataset: PyTorch Dataset object
-        criterion: Loss function
-        parameter_grid: Dictionary with hyperparameters and their possible values
-        static_params: Dictionary with best parameters of static model
-        num_epochs: Number of epochs for each fold
-        patience: number of consecutive epochs allowed for test loss to not improve before stopping the training
-        batch_size: number of samples in each batch
-        device: Device to train on ('cuda' or 'cpu')
-        k_folds: Number of folds for cross-validation
-        seed: random number generator seed
-        cross_validation_on_loss: boolean to decide on which metric to do cross validation
-        verbose: Print training progress
+        static_model_class (Type[nn.Module]): PyTorch model class for static problem (not an instance)
+        dynamic_model_class (Type[nn.Module]): PyTorch model class for dynamic problem (not an instance)
+        dataset (torch.utils.data.Dataset): PyTorch Dataset object
+        criterion (Callable[[torch.Tensor, torch.Tensor], torch.Tensor]): Loss function
+        parameter_grid (Dict[str, List[Any]]): Dictionary with hyperparameters and their possible values
+        static_params (Dict[str, Any]): Dictionary with best parameters of static model
+        num_epochs (int): Number of epochs for each fold
+        patience (int): Number of consecutive epochs allowed for test loss to not improve before stopping the training
+        batch_size (int): Number of samples in each batch
+        device (str): Device to train on ('cuda' or 'cpu')
+        k_folds (int): Number of folds for cross-validation
+        seed (int): Random number generator seed
+        cross_validation_on_loss (bool): Boolean to decide on which metric to do cross-validation
+        verbose (bool): Print training progress
 
     Returns:
-        best_params: Dictionary of the best hyperparameters
-        results: List of performance results for all hyperparameter combinations
+        Tuple[Dict[str, Any], List[float]]:
+            - best_params (Dict[str, Any]): Dictionary of the best hyperparameters
+            - results (List[float]): List of performance results for all hyperparameter combinations
     """
 
     kfold = KFold(n_splits=k_folds, shuffle=True, random_state=seed)
@@ -205,7 +205,7 @@ def k_fold_cross_validation_dynamic(
 
             # Train static model with its best parameters
             static_model = static_model_class(dropout=static_params['dropout']).to(device)
-            static_model.init_weights()
+            static_model.initialize_weights()
             static_optimizer = torch.optim.AdamW(static_model.parameters(), lr=static_params['learning_rate'], weight_decay=static_params['weight_decay'])
             static_scheduler_type = static_params['scheduler']
             if static_scheduler_type == 'CosineAnnealingLR':
