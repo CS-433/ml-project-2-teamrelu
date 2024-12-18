@@ -56,7 +56,7 @@ if static_params["model_type"] == 1:
     static_model = StaticModelMultibranch(num_classes=num_classes, embedding_dim=embedding_dim, extremities_dim=20, char_vocab_size=20, char_embed_dim=16, intermediate_dim=static_params["intermediate_dim"], dropout=static_params["dropout"])
 
 # Weight inizialization for robustness
-static_model.initialize_weights()
+#static_model.initialize_weights()
 
 print(static_params["learning_rate"])
 print(static_params["weight_decay"])
