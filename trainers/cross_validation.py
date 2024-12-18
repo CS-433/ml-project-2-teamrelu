@@ -5,6 +5,7 @@ from sklearn.model_selection import KFold
 import itertools
 from configs.dataloaders import create_data_loaders
 from models.temporal_block import TemporalBlock
+from losses.losses import CrossEntropy
 
 
 def k_fold_cross_validation_static(
@@ -220,7 +221,7 @@ def k_fold_cross_validation_dynamic(
             
             _, _, _, _ = run_training(
                 model=static_model,
-                criterion=criterion,
+                criterion=CrossEntropy,
                 optimizer=static_optimizer,
                 scheduler=static_scheduler,
                 lambda_penalty=0,
@@ -257,7 +258,7 @@ def k_fold_cross_validation_dynamic(
             # Train and validate the model using run_training
             _, _, val_loss, val_acc = run_training(
                 model=dynamic_model,
-                criterion=CrossEntropyWithTemporalSmoothness,
+                criterion=criterion,
                 optimizer=optimizer,
                 scheduler=scheduler,
                 lambda_penalty= params['lambda_penalty'],

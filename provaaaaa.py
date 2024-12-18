@@ -59,18 +59,18 @@ if static_params["model_type"] == 1:
 static_model.initialize_weights()
 
 print(static_params["learning_rate"])
-print()
-print()
-print()
-print()
+print(static_params["weight_decay"])
+print(static_params["scheduler"]["step_size"])
+print(static_params["scheduler"]["gamma"])
+print(static_params["scheduler"]["type"])
 
 # Set optimizer
 static_optimizer = torch.optim.AdamW(static_model.parameters(), static_params["learning_rate"], weight_decay=static_params["weight_decay"])
 
 # Set schduler if required
-if static_params["scheduler"] == "StepLR":
+if static_params["scheduler"]["type"] == "StepLR":
     static_scheduler = torch.optim.lr_scheduler.StepLR(static_optimizer, step_size=static_params["scheduler"]["step_size"], gamma=static_params["scheduler"]["gamma"])
-elif static_params["scheduler"] == "CosineAnnealingLR":
+elif static_params["scheduler"]["type"] == "CosineAnnealingLR":
     static_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(static_optimizer, T_max=static_params["scheduler"]["T_max"], eta_min=static_params["scheduler"]["eta_min"])
 else:
     static_scheduler = False
