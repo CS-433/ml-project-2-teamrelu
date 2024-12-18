@@ -463,8 +463,9 @@ def create_dynamic_tensor(interaction_data, te_levels, tl_levels):
         interaction_data : pandas Dataframe containing the interactions 
         te_levels : pandas DataFrame containing the TE concentration levels 
         tl_levels : pandas DataFrame containing the TL concentration levels 
-        use_concentration : bool representing if the concentrations are to add or not to the data
-        use_variation : bool representing if the variation of concentrations are to add or not to the data
+        
+    Returns:
+        result_tensor : pandas DataFrame containing the dynamic dataset
     """
     #Dataframe to tensor
     dynamic_tensor = torch.tensor(interaction_data.values, dtype=torch.float32)
