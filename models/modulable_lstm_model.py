@@ -16,7 +16,7 @@ class ModulableLSTMDynamicModel(nn.Module):
     """
 
     def __init__(self, static_model, static_learnable=False, num_timesteps=5, num_classes=15, num_features = 34, hidden_size = 64, num_layers=2, dropout=0.2, no_concentration=False, no_interaction=False, no_static=False):
-        super(LSTMDynamicModel, self).__init__()
+        super(ModulableLSTMDynamicModel, self).__init__()
 
         # Define attributes
         self.StaticModel = static_model
@@ -100,6 +100,5 @@ class ModulableLSTMDynamicModel(nn.Module):
         # Compute predictions for each phase
         predictions = self.output_layer(attn_output)
 
-        print(combined_inputs.shape)
 
         return predictions

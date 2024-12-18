@@ -36,12 +36,12 @@ test_size = 0.2 # for train/test splitting
 # Define device to be used for computations
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-no_concentration = True
+no_concentration = False
 no_interaction = True
-no_static = False
+no_static = True
 
 # Load data
-file_path = 'final_dataset.csv'
+file_path = 'datasets/final_dataset_dyn_with_te.csv'
 data = pd.read_csv(file_path)
 
 

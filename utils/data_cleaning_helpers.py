@@ -527,6 +527,13 @@ def protein_levels_cleaning(file_path, sheet_names, output_file_path_te, output_
     data_TE.rename(columns={data_TE.columns[0]: 'yORF'}, inplace=True)
     data_TL.rename(columns={data_TL.columns[0]: 'yORF'}, inplace=True)
     
+    # Normalize the data
+    for col in data_TE.columns[1:]:
+        data_TE[col] = (data_TE[col] - data_TE[col].mean()) / data_TE[col].std()
+
+    for col in data_TL.columns[1:]:
+        data_TL[col] = (data_TL[col] - data_TL[col].mean()) / data_TL[col].std()
+        
     # Export the data in csv files
     create_csv(data_TE, output_file_path_te)
     create_csv(data_TL, output_file_path_tl)
