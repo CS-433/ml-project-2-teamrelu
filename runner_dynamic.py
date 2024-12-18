@@ -1,13 +1,7 @@
 import torch
 import torch.nn as nn
-from torch.optim.lr_scheduler import CosineAnnealingLR
-import pandas as pd
-import json
-from sklearn.model_selection import train_test_split
-from trainers.training_utils import validate, run_training
-from models.static_models.static_model_MLP import StaticModelMLP
-from models.static_models.static_model_multibranch import StaticModelMultibranch
-from models.simple_model import SimpleDynamicModel
+from trainers.training_utils import run_training
+from models.dynamic_models.simple_model import SimpleDynamicModel
 from models.dynamic_models.temporal_block import TemporalBlock
 from models.dynamic_models.tcn_model import TCNDynamicModel
 from models.dynamic_models.modulable_lstm_model import ModulableLSTMDynamicModel
@@ -18,7 +12,7 @@ from configs.dataloaders import create_data_loaders
 
 def dynamic_training(num_features, num_classes, num_timesteps, dynamic_params, static_model, dataloader_train, dataloader_test, verbose, device, seed):
 
-    # Inizialize model: 0 for ModulableLSTMDynamicModel, 1 for TCNDynamicModel
+    # Inizialize model: 0 for ModulableLSTMDynamicModel, 1 for TCNDynamicModel, 2 NaiveModel
     if dynamic_params["model_type"] == 0:
         dynamic_model = ModulableLSTMDynamicModel(static_model, static_learnable=dynamic_params["static_learnable"], num_timesteps=num_timesteps, num_classes=num_classes, num_features = num_features, hidden_size = dynamic_params["intermediate_dim"], dropout=dynamic_params["dropout"], no_concentration=dynamic_params["no_concentration"], no_interaction=dynamic_params["no_interaction"], no_static=dynamic_params["no_static"])
     if dynamic_params["model_type"] == 1:
