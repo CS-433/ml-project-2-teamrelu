@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from .configs.dataset_class import create_vocabulary
 
-# 2. Padding delle sequenze per renderle della stessa lunghezza
+
 def sequences_naive_processing(sequences, max_length=512):
     vocabulary = create_vocabulary() 
     processed_sequences = [] 
@@ -19,13 +19,13 @@ def sequences_naive_processing(sequences, max_length=512):
 
     return processed_sequences
 
-# 5. Creare un semplice modello con uno strato denso
+
 class NaiveModel(nn.Module):
     def __init__(self, input_dim=529, num_classes=15):
         super(NaiveModel, self).__init__()
-        self.dense1 = nn.Linear(input_dim, 64)  # Primo strato denso
-        self.relu = nn.ReLU()  # Funzione di attivazione ReLU
-        self.dense2 = nn.Linear(64, num_classes)  # Strato di output
+        self.dense1 = nn.Linear(input_dim, 64)
+        self.relu = nn.ReLU()
+        self.dense2 = nn.Linear(64, num_classes)
 
     def forward(self, x_static, x_dynamic):
         x_static = x_static.unsqueeze(1).repeat(1, self.num_timesteps, 1)
