@@ -3,15 +3,15 @@
     "test_size": 0.2,
     "batch_size": 32,
     "static_model": {
-      "model_type": 2,
-      "num_epochs": 500,
-      "patience": 0,
-      "dropout": 0.2,
-      "intermediate_dim": 0,
+      "model_type": 1,
+      "num_epochs": 100,
+      "patience": 20,
+      "dropout": 0.25,
+      "intermediate_dim": 32,
       "learning_rate": 0.001,
-      "weight_decay": 9,
-      "criterion": 0,
-      "scheduler": 0,
+      "weight_decay": 1e-2,
+      "criterion": "CrossEntropy",
+      "scheduler": "StepLR",
       "long_embeddings": true
     },
 
@@ -23,11 +23,11 @@
       "intermediate_dim": 32,
       "learning_rate": 1e-3,
       "weight_decay": 1e-2,
-      "lambda_penalty": 1e-4,
-      "criterion": "CrossEntropyLoss",
+      "lambda_penalty": 1e-2,
+      "criterion": "CrossEntropy",
       "scheduler": {
         "type": "StepLR",
-        "step_size": 10,
+        "step_size": 20,
         "gamma": 0.1,
         "T_max": 60,
         "eta_min": 1e-5
@@ -35,6 +35,6 @@
       "no_concentration": false,
       "no_interactions": false,
       "no_static": false,
-      "static_learnable": false
+      "static_learnable": true
     }
   }
