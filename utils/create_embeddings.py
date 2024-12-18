@@ -49,13 +49,12 @@ def create_protein_embeddings(input_file_path, output_file_path, chunk_size=5, s
         chunk = data.iloc[n_data - n_data%chunk_size:, :]
         chunk = [tuple(row) for row in chunk.values]
         mode = 'a' if n_data > chunk_size else 'w'
-        print(n_data - n_data%chunk_size)
         save_chunk_embeddings(chunk, model, alphabet, batch_converter, final_idx, output_file_path, mode, emb_len)
         if verbose:
             print(f"Completed {n_data} of {n_data}")
 
 
-def create_extremities_embeddings(input_file_path, output_file_path, extremities_len, small_embedder=False):
+def create_extremities_embeddings(input_file_path, output_file_path, extremities_len, chunk_size=100, small_embedder=False, verbose=False):
     """
     Generate and save embeddings for the first and last residues of sequences.
 
@@ -63,11 +62,11 @@ def create_extremities_embeddings(input_file_path, output_file_path, extremities
     - input_file_path: Path to the input CSV file containing sequences
     - output_file_path: Path to save the output CSV file
     - extremities_len: Length of the sequence extremities to extract
+    - chunk_size: Number of sequences to process in each chunk
     - small_embedder: Whether to use a smaller ESM-2 model for faster processing (320-dim). If false it uses a 640-dim embedding
+    - verbose: Whether to print progress messages
 
     Returns: None
-    
-    Note: The process is not made in chunks because the process is fast due to the short sequences
     """
 
     # Load ESM-2 model
@@ -91,26 +90,33 @@ def create_extremities_embeddings(input_file_path, output_file_path, extremities
     data = ((seq[:extremities_len], seq[-extremities_len:]) for seq in df.iloc[:, -1])
     seq_extremities = pd.DataFrame(data, columns = ["beginning", "end"])
     seq_extremities.insert(0, "yORF", df.iloc[:, 0])
+    for i in range(0, n_data-chunk_size+1, chunk_size):
+        chunk = seq_extremities.iloc[i:i+chunk_size, :]
+        #starting part
+        beginning = chunk.iloc[:, [0]+[1]]
+        beginning = [tuple(row) for row in beginning.values]
+        #ending part
+        end = chunk.iloc[:, [0]+[2]]
+        end=[tuple(row) for row in end.values]
+        #creating and savinging chunk embeddings
+        mode = 'w' if i==0 else 'a'
+        save_chunk_extremities(beginning, end, model, alphabet, batch_converter, final_idx, output_file_path, mode, emb_len)
+        if verbose:
+            print(f"Completed {i+chunk_size} of {n_data}")
 
-    # Create beginning embeddings
-    beginning = seq_extremities.iloc[:, [0]+[1]]
-    beginning = [tuple(row) for row in beginning.values]
-    _, beginning_representation = get_chunk_embeddings(beginning, model, alphabet, batch_converter, final_idx)
-    df_b = pd.DataFrame([b.numpy() for b in beginning_representation], columns=[f'emb_b{i+1}' for i in range(emb_len)])
-
-    # Create end embeddings
-    end = seq_extremities.iloc[:, [0]+[2]]
-    end=[tuple(row) for row in end.values]
-    _, end_representation = get_chunk_embeddings(end, model, alphabet, batch_converter, final_idx)
-    df_e = pd.DataFrame([e.numpy() for e in end_representation], columns=[f'emb_e{i+1}' for i in range(emb_len)])
-
-    # Join the two datasets and export them
-    emb_extremities = pd.concat([df_b, df_e], axis=1)
-    emb_extremities.insert(0, "yORF", df.iloc[:,0])
-    emb_extremities.to_csv(output_file_path, index=False)
+    # Processing last proteins if n_data is not multiple of chunk_size
+    if n_data%chunk_size != 0:
+        beginning = chunk.iloc[:, [0]+[1]]
+        beginning = [tuple(row) for row in beginning.values]
+        end = chunk.iloc[:, [0]+[2]]
+        end=[tuple(row) for row in end.values]
+        mode = 'a' if n_data > chunk_size else 'w'
+        save_chunk_extremities(beginning, end, model, alphabet, batch_converter, final_idx, output_file_path, mode, emb_len)
+        if verbose:
+            print(f"Completed {n_data} of {n_data}")
 
 
-# Function to get embeddings of a chunk of data
+# Helper function to get embeddings of a chunk of data
 def get_chunk_embeddings(data, model, alphabet, batch_converter, final_idx):
     """ Extract sequence embeddings from a chunk of data using the ESM-2 model
 
@@ -126,7 +132,6 @@ def get_chunk_embeddings(data, model, alphabet, batch_converter, final_idx):
     - sequence_representations: List of tensor embeddings for each sequence
     """
 
-    print(data[0])
     batch_labels, _ , batch_tokens = batch_converter(data)
     with torch.no_grad():
         results = model(batch_tokens, repr_layers=[final_idx], return_contacts=False)
@@ -141,7 +146,7 @@ def get_chunk_embeddings(data, model, alphabet, batch_converter, final_idx):
     return batch_labels, sequence_representations
 
 
-# Function to save embeddings of a chunk of data
+# Helper function to save embeddings of a chunk of data
 def save_chunk_embeddings(data, model, alphabet, batch_converter, final_idx, output_file_path, mode, emb_len):
     """ Save sequence embeddings for a chunk of data to a CSV file
 
@@ -173,3 +178,40 @@ def save_chunk_embeddings(data, model, alphabet, batch_converter, final_idx, out
         embeddings.to_csv(output_file_path, index=False, header=True, mode='w')
     elif mode == 'a':
         embeddings.to_csv(output_file_path, index=False, header=False, mode='a')
+
+
+def save_chunk_extremities(begin, end, model, alphabet, batch_converter, final_idx, output_file_path, mode, emb_len):
+    """ Save extremities sequence embeddings for a chunk of data to a CSV file
+
+    Parameters:
+    - begin: List of tuples containing (label, sequence)
+    - end: List of tuples containing (label, sequence)
+    - model: Pretrained ESM-2 model
+    - alphabet: Alphabet used by the model
+    - batch_converter: Function to convert data into model inputs
+    - final_idx: Index of the layer to extract embeddings from
+    - output_file_path: Path to save the output CSV file
+    - mode: Write ('w') or append ('a') mode for the CSV file
+    - emb_len: Length of the embedding vectors
+
+    Returns: None
+
+    """
+    
+    batch_labels, begin_representation = get_chunk_embeddings(begin, model, alphabet, batch_converter, final_idx)
+    begin_representation_list = [tensor.squeeze().tolist() for tensor in begin_representation]
+    _, end_representation = get_chunk_embeddings(end, model, alphabet, batch_converter, final_idx)
+    end_representation_list = [tensor.squeeze().tolist() for tensor in end_representation]
+
+    df_b = pd.DataFrame(begin_representation_list, columns=[f'emb_b{i+1}' for i in range(emb_len)])
+    df_e = pd.DataFrame(end_representation_list, columns=[f'emb_e{i+1}' for i in range(emb_len)])
+
+    emb_extremities = pd.concat([df_b, df_e], axis=1)
+    emb_extremities.insert(0, "yORF", batch_labels)
+
+    if mode == 'w':
+        headers = ['yORF'] + [f'emb_b{i+1}' for i in range(emb_len)] + [f'emb_e{i+1}' for i in range(emb_len)]
+        emb_extremities.columns = headers
+        emb_extremities.to_csv(output_file_path, index=False, header=True, mode='w')
+    elif mode == 'a':
+        emb_extremities.to_csv(output_file_path, index=False, header=False, mode='a')
