@@ -1,6 +1,6 @@
 import torch
-from torch.utils.data import DataLoader, Subset
-from training_utils import validate, run_training
+import pandas as pd
+from trainers.training_utils import validate, run_training
 from sklearn.model_selection import KFold
 import itertools
 from configs.dataloaders import create_data_loaders
@@ -65,8 +65,8 @@ def k_fold_cross_validation(
                 print(f"Fold {fold+1}/{k_folds}")
 
             # Split dataset into training and validation
-            data_train = Subset(dataset, train_idx)
-            data_test = Subset(dataset, val_idx)
+            data_train = dataset.loc[train_idx]
+            data_test = dataset.loc[val_idx]
 
             # Create DataLoaders
             train_loader, test_loader = create_data_loaders(data_train, data_test, batch_size)
@@ -77,7 +77,7 @@ def k_fold_cross_validation(
 
             # Initialize optimizer and scheduler
             optimizer = torch.optim.AdamW(model.parameters(), lr=params['learning_rate'], weight_decay=params['weight_decay'])
-            scheduler = scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer,T_max=100, eta_min=1e-5)
+            scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer,T_max=100, eta_min=1e-5)
 
             # Train and validate the model using run_training
             _, _, val_loss, val_acc = run_training(

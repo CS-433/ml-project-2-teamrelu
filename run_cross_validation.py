@@ -31,7 +31,11 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 file_path = 'final_dataset.csv'
 data = pd.read_csv(file_path)
 
-parameter_grid = 
+parameter_grid = {
+    "dropout": [0.1, 0.3],
+    "learning_rate": [0.001, 0.01],
+    "weight_decay": [0.0001, 0.01]
+}
 
 best_params, results = k_fold_cross_validation(
     StaticModelMultibranch,
@@ -48,3 +52,5 @@ best_params, results = k_fold_cross_validation(
     cross_validation_on_loss=True,
     verbose=True
 )
+
+print('mario')
