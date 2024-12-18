@@ -57,27 +57,8 @@ class LSTMDynamicModel(nn.Module):
         # Static representation
         static_representation = static_features.unsqueeze(1).repeat(1, self.num_timesteps, 1) # Expand static dataset to match dynamic dimensions [batch_size, num_timesteps, num_classes]
 
-        # Use concentration features to calculate concentration variations as additional features
-        concentration_TE = dynamic_data[:, :, 15]
-        concentration_TL = dynamic_data[:, :, 16]
-        delta_TE = concentration_TE[:, 1:] - concentration_TE[:, :-1]
-        delta_TL = concentration_TL[:, 1:] - concentration_TL[:, :-1]
-
-        # Padding to keep original dimension
-        delta_TE = torch.cat([torch.zeros(delta_TE.size(0), 1), delta_TE], dim=1)
-        delta_TL = torch.cat([torch.zeros(delta_TL.size(0), 1), delta_TL], dim=1)
-        delta_TE = delta_TE.unsqueeze(-1)
-        delta_TL = delta_TL.unsqueeze(-1)
-
-        # Add a feature dimension to dynamic inputs
-        dynamic_inputs = torch.cat([
-            dynamic_data,
-            delta_TE,
-            delta_TL
-        ], dim=2)
-
         # Combine static and dynamic inputs
-        combined_inputs = torch.cat([static_representation, dynamic_inputs], dim=2)
+        combined_inputs = torch.cat([static_representation, dynamic_data], dim=2)
 
         # Process through the LSTM
         lstm_out, _ = self.lstm(combined_inputs)

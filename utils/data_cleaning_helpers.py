@@ -455,14 +455,16 @@ def interaction_matrix(file_path, data, output_file_path, delimiter=';'):
 
 
 
-def create_dynamic_tensor(interaction_data, te_levels, tl_levels, use_concentration = True):
+def create_dynamic_tensor(interaction_data, te_levels, tl_levels):
     """
-    Create a matrix containing the interactions between the different proteins
+    Create a the dynamic tensor to pass to the models
     
     Args:
-        file_path : path to the file containing the interactions between the proteins 
-        delimiter : a char that separates the data in the file
-        data : A pandas DataFrame containing the static dataset
+        interaction_data : pandas Dataframe containing the interactions 
+        te_levels : pandas DataFrame containing the TE concentration levels 
+        tl_levels : pandas DataFrame containing the TL concentration levels 
+        use_concentration : bool representing if the concentrations are to add or not to the data
+        use_variation : bool representing if the variation of concentrations are to add or not to the data
     """
     #Dataframe to tensor
     dynamic_tensor = torch.tensor(interaction_data.values, dtype=torch.float32)
@@ -473,12 +475,23 @@ def create_dynamic_tensor(interaction_data, te_levels, tl_levels, use_concentrat
     # Concatenate along the second dimension (dim=1)
     result_tensor = torch.cat(split_tensors, dim=1)
 
-    if use_concentration == True:
-        te_levels_tensor = torch.tensor(te_levels.values, dtype=torch.float32)
-        te_levels_tensor = te_levels_tensor.unsqueeze(-1)
-        tl_levels_tensor = torch.tensor(tl_levels.values, dtype=torch.float32)
-        tl_levels_tensor = tl_levels_tensor.unsqueeze(-1)
-        result_tensor = torch.cat((result_tensor, te_levels_tensor, tl_levels_tensor), dim=2)
+    # Concatenate the concentration tensors
+    te_levels_tensor = torch.tensor(te_levels.values, dtype=torch.float32)
+    te_levels_tensor = te_levels_tensor.unsqueeze(-1)
+    tl_levels_tensor = torch.tensor(tl_levels.values, dtype=torch.float32)
+    tl_levels_tensor = tl_levels_tensor.unsqueeze(-1)
+    result_tensor = torch.cat((result_tensor, te_levels_tensor, tl_levels_tensor), dim=2)
+        
+    delta_TE = te_levels_tensor[:, 1:] - te_levels_tensor[:, :-1]
+    delta_TL = tl_levels_tensor[:, 1:] - tl_levels_tensor[:, :-1]
+
+    # Padding to keep original dimension
+    delta_TE = torch.cat([torch.zeros(delta_TE.size(0), 1), delta_TE], dim=1)
+    delta_TL = torch.cat([torch.zeros(delta_TL.size(0), 1), delta_TL], dim=1)
+    delta_TE = delta_TE.unsqueeze(-1)
+    delta_TL = delta_TL.unsqueeze(-1)
+    # Concatenate the variation tensors
+    result_tensor = torch.cat((result_tensor, delta_TE, delta_TL), dim=2)
 
     return result_tensor
     
