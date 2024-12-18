@@ -8,7 +8,7 @@ from models.dynamic_models.temporal_block import TemporalBlock
 from models.dynamic_models.tcn_model import TCNDynamicModel
 from models.dynamic_models.modulable_lstm_model import ModulableLSTMDynamicModel
 from losses.losses import CrossEntropy, CrossEntropyWithTemporalSmoothness, CrossEntropyWithLasso, loss_functions_map
-from utils.training_graphs import plot_training_results
+from trainers.training_graphs import plot_training_results
 from models.static_models.xgboost_model import xgb_training
 
 
