@@ -18,7 +18,7 @@ This repository contains code and data for the second ML project on dynamic prot
 - [License](#license)
 </details>
 
-## Problem Description <a name="problem-desciption"></a>
+## Problem Description <a name="problem-description"></a>
 
 DESCRIZIONE RINO GATTUSO BLABLA
 For a much deeper insite, refer to the report of the project. ADD REPORT LINK
