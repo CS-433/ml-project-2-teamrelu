@@ -14,7 +14,7 @@ class StaticModelMLP(nn.Module):
         initialize_weights: applies He initialization to all the linear layers
     """
 	
-    def __init__(self, input_size=640, num_classes=15):
+    def __init__(self, input_size=640, intermediate_dim = 64, num_classes=15, dropout=0.2):
         """ 
         Class constructor
         Args:
@@ -26,13 +26,11 @@ class StaticModelMLP(nn.Module):
         self.input_dim = input_size
 
         self.inner = nn.Sequential(
-            nn.Linear(input_size, 256), # First layer, reduces the dimension from input_size to 256
-            nn.LayerNorm(256, eps=1e-05),
+            nn.Linear(input_size, intermediate_dim), # First layer, reduces the dimension from input_size to 256
+            nn.LayerNorm(intermediate_dim, eps=1e-05),
             nn.ReLU(),
-            nn.Linear(256, 64), #  Second layer, reduces the dimension from 256 to 64
-            nn.LayerNorm(64, eps=1e-05),
-            nn.ReLU(),
-            nn.Linear(64, num_classes), # Output layer, reduces the dimension from 64 to the number of classes
+            nn.Dropout(dropout),
+            nn.Linear(intermediate_dim, num_classes)
         )
 
 

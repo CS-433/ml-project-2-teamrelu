@@ -4,12 +4,12 @@ from torch.optim.lr_scheduler import CosineAnnealingLR
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from trainers.training_utils import validate, run_training
-from models.static_model_MLP import StaticModelMLP
-from models.static_model_multibranch import StaticModelMultibranch
+from models.static_models.static_model_MLP import StaticModelMLP
+from models.static_models.static_model_multibranch import StaticModelMultibranch
 from models.simple_model import SimpleDynamicModel
-from models.temporal_block import TemporalBlock
-from models.tcn_model import TCNDynamicModel
-from models.modulable_lstm_model import ModulableLSTMDynamicModel
+from models.dynamic_models.temporal_block import TemporalBlock
+from models.dynamic_models.tcn_model import TCNDynamicModel
+from models.dynamic_models.modulable_lstm_model import ModulableLSTMDynamicModel
 from losses.losses import CrossEntropy, CrossEntropyWithTemporalSmoothness, CrossEntropyWithLasso
 from utils.training_graphs import plot_training_results
 from configs.dataloaders import create_data_loaders

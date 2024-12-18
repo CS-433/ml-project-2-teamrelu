@@ -2,8 +2,8 @@ import torch
 import torch.nn as nn
 import pandas as pd
 from trainers.cross_validation import k_fold_cross_validation_static, k_fold_cross_validation_dynamic
-from models.static_model_multibranch import StaticModelMultibranch
-from models.lstm_model import LSTMDynamicModel
+from models.static_models.static_model_multibranch import StaticModelMultibranch
+from models.dynamic_models.lstm_model import LSTMDynamicModel
 from losses.losses import CrossEntropy, CrossEntropyWithLasso, CrossEntropyWithTemporalSmoothness
 import json
 

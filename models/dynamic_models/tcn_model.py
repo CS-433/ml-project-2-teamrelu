@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from models.temporal_block import TemporalBlock
+from models.dynamic_models.temporal_block import TemporalBlock
 
 class TCNDynamicModel(nn.Module):
     """ 

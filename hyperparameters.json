@@ -3,8 +3,8 @@
     "test_size": 0.2,
     "batch_size": 32,
     "static_model": {
-      "model_type": 1,
-      "num_epochs": 100,
+      "model_type": 0,
+      "num_epochs": 4,
       "patience": 20,
       "dropout": 0.2,
       "intermediate_dim": 32,

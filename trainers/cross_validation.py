@@ -4,7 +4,7 @@ from trainers.training_utils import validate, run_training
 from sklearn.model_selection import KFold
 import itertools
 from configs.dataloaders import create_data_loaders
-from models.temporal_block import TemporalBlock
+from models.dynamic_models.temporal_block import TemporalBlock
 from losses.losses import CrossEntropy
 
 
