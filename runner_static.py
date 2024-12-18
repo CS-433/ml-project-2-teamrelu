@@ -26,7 +26,11 @@ def static_training(num_classes, static_params, dataloader_train, dataloader_tes
     if static_params["model_type"] == 1:
         static_model = StaticModelMultibranch(num_classes=num_classes, embedding_dim=embedding_dim, extremities_dim=20, char_vocab_size=20, char_embed_dim=16, intermediate_dim=static_params["intermediate_dim"], dropout=static_params["dropout"])
     if static_params["model_type"] == 2:
-        train_loss, train_accuracy, test_loss, test_accuracy, static_model = xgb_training(trainloader = dataloader_train, testloader = dataloader_test, num_boost_round =static_params["num_epochs"], learning_rate=static_params["learning_rate"], dropout=static_params["dropout"], lambda_=static_params["weight_decay"], verbose=static_params["verbose"])
+        train_loss, train_accuracy, test_loss, test_accuracy, model = xgb_training(trainloader = dataloader_train, testloader = dataloader_test, num_boost_round =static_params["num_epochs"], learning_rate=static_params["learning_rate"], dropout=static_params["dropout"], lambda_=static_params["weight_decay"], verbose=verbose)
+        state_dict = model.get_dump()
+        if verbose:
+            plot_training_results(train_loss, train_accuracy, test_loss, test_accuracy)
+        return train_loss, train_accuracy, test_loss, test_accuracy, state_dict
 
     # Weight inizialization for robustness
     static_model.initialize_weights()
@@ -57,9 +61,6 @@ def static_training(num_classes, static_params, dataloader_train, dataloader_tes
     if verbose:
         plot_training_results(train_loss, train_accuracy, test_loss, test_accuracy)
     
-    if static_params["model_type"] != 2:
-        state_dict = static_model.state_dict()
-    else:
-        state_dict = static_model.get_dump()
+    state_dict = static_model.state_dict()
 
     return train_loss, train_accuracy, test_loss, test_accuracy, state_dict
