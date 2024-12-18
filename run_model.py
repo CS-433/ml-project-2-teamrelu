@@ -37,11 +37,11 @@ test_size = 0.2 # for train/test splitting
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 no_concentration = False
-no_interaction = True
-no_static = True
+no_interaction = False
+no_static = False
 
 # Load data
-file_path = 'datasets/final_dataset_dyn_with_te.csv'
+file_path = 'datasets/final_dataset_dyn.csv'
 data = pd.read_csv(file_path)
 
 
@@ -54,7 +54,7 @@ dataloader_train, dataloader_test = create_data_loaders(data_train, data_test, b
 static_model = StaticModelMultibranch(num_classes=num_classes, embedding_dim=640, extremities_dim=20, char_vocab_size=20, char_embed_dim=16, intermediate_dim=32, dropout=dropout)
 static_model.init_weights()
 optimizer = torch.optim.AdamW(static_model.parameters(), learning_rate, weight_decay=weight_decay)
-static_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, learning_rate, gamma=0.1)
+static_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.1)
 [train_loss, train_accuracy, test_loss, test_accuracy] = run_training(model = static_model,
                                                                         criterion = CrossEntropy,
                                                                         optimizer = optimizer,
@@ -81,7 +81,7 @@ if static_learnable == True:
 else:
     optimizer = torch.optim.AdamW(dynamic_model.parameters(), lr=learning_rate, weight_decay=weight_decay)
 # Define scheduler
-dynamic_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, learning_rate, gamma=0.1)
+dynamic_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.1)
 
 [train_loss, train_accuracy, test_loss, test_accuracy] = run_training(model = dynamic_model,
                                                                         criterion = CrossEntropy,
