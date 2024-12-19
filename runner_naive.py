@@ -1,9 +1,9 @@
-from naive_model.naive_trainer import run_training
-from naive_model.naive_model import NaiveModel
+from models.naive_model.naive_trainer import run_training
+from models.naive_model.naive_model import NaiveModel
 from torch.optim import AdamW
 import os
 import pandas as pd
-from naive_model.sequences_dataloader import NaiveProteinDataset, create_dynamic_tensor
+from models.naive_model.sequences_dataloader import NaiveProteinDataset, create_dynamic_tensor
 from sklearn.model_selection import train_test_split
 import torch
 from torch.utils.data import DataLoader
