@@ -85,7 +85,6 @@ def eval_dynamic_accuracy(dynamic_model, dataloader_test):
         
         mask = ~torch.all(dynamic_label[:, 1:] == dynamic_label[:, :-1], dim=1) 
         filtered_predicted = predicted[mask]
-        print(filtered_predicted)
         filtered_labels = dynamic_label[mask]
         
         if filtered_predicted.size(0) > 0:
