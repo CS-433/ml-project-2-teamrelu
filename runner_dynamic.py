@@ -14,6 +14,7 @@ from configs.dataloaders import create_data_loaders
 
 def dynamic_training(num_features, num_classes, num_timesteps, embedding_dim, dynamic_params, static_model, dataloader_train, dataloader_test, verbose, device):
 
+    static_model = static_model.to(device)
     # Inizialize model: 0 for LSTMDynamicModel, 1 for TCNDynamicModel, 2 SimpleDynamicModel, 3 ModulableLSTMDynamicModel
     if dynamic_params["model_type"] == 0:
         if verbose:
@@ -63,14 +64,14 @@ def dynamic_training(num_features, num_classes, num_timesteps, embedding_dim, dy
         plot_training_results(train_loss, train_accuracy, test_loss, test_accuracy)
 
     if verbose:
-        dynamic_accuracy = eval_dynamic_accuracy(dynamic_model, dataloader_test)
+        dynamic_accuracy = eval_dynamic_accuracy(dynamic_model, dataloader_test, device)
         print(f"Accuracy only on dynamic proteins: {dynamic_accuracy}")
 
 
     return train_loss, train_accuracy, test_loss, test_accuracy, dynamic_model.state_dict() 
 
 
-def eval_dynamic_accuracy(dynamic_model, dataloader_test):
+def eval_dynamic_accuracy(dynamic_model, dataloader_test, device):
 
     dynamic_model.eval()
     total_correct_accuracy = 0  
@@ -79,6 +80,13 @@ def eval_dynamic_accuracy(dynamic_model, dataloader_test):
     for batch in dataloader_test:
 
         dynamic_data, global_input, ind_start_seq, ind_end_seq, static_label, dynamic_label = batch
+        dynamic_data = dynamic_data.to(device)
+        global_input = global_input.to(device)
+        ind_start_seq = ind_start_seq.to(device)
+        ind_end_seq = ind_end_seq.to(device)
+        static_label = static_label.to(device)
+        dynamic_label = dynamic_label.to(device)
+        
         output_val = dynamic_model(dynamic_data, global_input, ind_start_seq, ind_end_seq)
         
         _, predicted = torch.max(output_val, 2)

@@ -9,6 +9,11 @@ import torch
 from torch.utils.data import DataLoader
 from trainers.training_graphs import plot_training_results
 
+torch.manual_seed(30026)
+if(torch.cuda.is_available()):
+    torch.cuda.manual_seed(30026)
+    torch.cuda.manual_seed_all(30026)
+
 model = NaiveModel(input_dim=531, num_classes=15, num_timesteps=5)
 optimizer = AdamW(model.parameters(), lr=0.001)
 current_dir = os.path.dirname(os.path.abspath(__file__)) 
