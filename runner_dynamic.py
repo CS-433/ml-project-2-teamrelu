@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 from trainers.training_utils import run_training
 from models.dynamic_models.simple_model import SimpleDynamicModel
+from models.dynamic_models.lstm_model import LSTMDynamicModel
 from models.dynamic_models.temporal_block import TemporalBlock
 from models.dynamic_models.modulable_lstm_model import ModulableLSTMDynamicModel
 from models.dynamic_models.tcn_model import TCNDynamicModel
@@ -13,11 +14,11 @@ from configs.dataloaders import create_data_loaders
 
 def dynamic_training(num_features, num_classes, num_timesteps, embedding_dim, dynamic_params, static_model, dataloader_train, dataloader_test, verbose, device):
 
-    # Inizialize model: 0 for ModulableLSTMDynamicModel, 1 for TCNDynamicModel, 2 NaiveModel, 3 SimpleModel
+    # Inizialize model: 0 for LSTMDynamicModel, 1 for TCNDynamicModel, 2 SimpleDynamicModel, 3 ModulableLSTMDynamicModel
     if dynamic_params["model_type"] == 0:
         if verbose:
-            print('Starting training of ModulableLSTMDynamicModel')
-        dynamic_model = ModulableLSTMDynamicModel(static_model, static_learnable=dynamic_params["static_learnable"], num_timesteps=num_timesteps, num_classes=num_classes, num_features = num_features, hidden_size = dynamic_params["intermediate_dim"], dropout=dynamic_params["dropout"], no_concentration=dynamic_params["no_concentration"], no_interaction=dynamic_params["no_interaction"], no_static=dynamic_params["no_static"])
+            print('Starting training of LSTMDynamicModel')
+        dynamic_model = LSTMDynamicModel(static_model, static_learnable=dynamic_params["static_learnable"], num_timesteps=num_timesteps, num_classes=num_classes, num_features = num_features, hidden_size = dynamic_params["intermediate_dim"], dropout=dynamic_params["dropout"])
     if dynamic_params["model_type"] == 1:
         if verbose:
             print('Starting training of TCNDynamicModel')
@@ -30,8 +31,8 @@ def dynamic_training(num_features, num_classes, num_timesteps, embedding_dim, dy
         dynamic_model = SimpleDynamicModel(embeddings_dim=embedding_dim, hidden_dim=dynamic_params["intermediate_dim"], num_classes=num_classes, num_timesteps=num_timesteps)
     if dynamic_params["model_type"] == 3:
         if verbose:
-            print('Starting training of NaiveModel')
-        dynamic_model = NaiveModel(num_timesteps=num_timesteps) # ROOOOOOO
+            print('Starting training of ModulableLSTMDynamicModel')
+        dynamic_model = ModulableLSTMDynamicModel(static_model, static_learnable=dynamic_params["static_learnable"], num_timesteps=num_timesteps, num_classes=num_classes, num_features = num_features, hidden_size = dynamic_params["intermediate_dim"], dropout=dynamic_params["dropout"], no_concentration=dynamic_params["no_concentration"], no_interaction=dynamic_params["no_interaction"], no_static=dynamic_params["no_static"])
 
     # Weight inizialization for robustness
     #static_model.initialize_weights()

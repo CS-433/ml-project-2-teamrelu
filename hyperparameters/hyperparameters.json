@@ -17,7 +17,8 @@
         "gamma": 0.1,
         "T_max": 60,
         "eta_min": 1e-5
-      }
+      },
+      "long_embeddings": true
     },
 
     "dynamic_model": {
