@@ -14,8 +14,7 @@ This repository contains code and data for the second ML project on dynamic prot
   - [ESM Models](#esm-models)
   - [Static Models](#static-models)
   - [Dynamic Models](#dynamic-models)
-- [Citations](#citations)
-- [License](#license)
+- [Repository Infos](#repository-infos)
 </details>
 
 ## Problem Description <a name="problem-description"></a>
@@ -31,19 +30,21 @@ For a much deeper insite, refer to the report of the project.
 
 For setting up all the needed packages, you need to run on your bash file:
 
+```
 pip install -r requirements.txt
+```
 
 Adding if necessary the full path of the requirements.txt on your computer.
 
 ### Data Cleaning <a name="data-cleaning"></a>
 
-You can create dataset running data_cleaning.ipynb. In this notebook, we provide our datacleaning and data inspection pipeline, together with plots and remarks.
+You can create dataset running `data_cleaning.ipynb`. In this notebook, we provide our datacleaning and data inspection pipeline, together with plots and remarks.
 
 All the created datasets are then saved to the datasets folder. Feel free to skip this preprocessing and directly go to the trainings of the models.
 
 ### Run Models <a name="run-models"></a>
 
-You can go through all our workflow in run_all.ipynb. In this Jupyter Notebook, we create and run all the models we have implemented for the static and the dynamic problem, and also do cross-validation of the main ones.
+You can go through all our workflow in `run_all.ipynb`. In this Jupyter Notebook, we create and run all the models we have implemented for the static and the dynamic problem, and also do cross-validation of the main ones.
 
 The architectures used allow for a wide range of different hyperparameters: for easily tune them we provide some JSON files with which you can play. In particular, you can decide which architecture to use setting the _model_type_ variable in the JSON files. For more informations, please refer to the tables shown below.
 
@@ -68,9 +69,24 @@ For our static localization problem, we tried 3 different architectures:
 
 For our dynamic localization problem, we tried 4 different architectures.
 
-| Name | model_type           |  | Description  |
-|-----------|---------------|---------|--------------|
+| Name | model_type           |  Description  |
+|-----------|---------------|--------------|
 | LSTM Dynamic Model    | Dynamic and static Data are combined together and given to bidirectional LSTM layers for feature extraction. Linear layers for classification |
 | TCN Model   | 1         | Temporal Convolutional Layers for dynamic data feature extraction, then combined with static model output with linear layers |
 | Simple Model    | 2 | Just linear layers, no temporal architecture involved  |
 | Modulable LSTM Dynamic Model    | 3 | Same architecture as LSTM Dynamic Model, but allows to choose which data to consider for training |
+
+## Repository infos <a name="reposutory-infos"></a>
+
+Apart from the two Jupyter Notebooks, the reposutory is organized in folders which handle different tasks:
+* _configs_: for creating datasets and dataloaders
+* _datasets_: with all the datasets created with `run_data_cleaning.ipynb`
+* _hyperparameters_: with all the JSON files (for our best models, refer to `hyperparameters_cross_val.json`)
+* _losses_: with definitions of all the different losses we can use (and also the map to handle them for function passing)
+* _models_:
+  * _static models_ : with all the static model classes
+  * _dynamic models_ : with all the dynamic model classes
+  * _naive model_: for creating and running the required naive model
+* _plot outputs_: with data inspection figures
+* _trainers_: with all functions for training and validation
+* _utils_: with all helpers function used in our data cleaning
