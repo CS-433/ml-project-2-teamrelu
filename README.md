@@ -71,7 +71,7 @@ For our dynamic localization problem, we tried 4 different architectures.
 
 | Name | model_type           |  Description  |
 |-----------|---------------|--------------|
-| LSTM Dynamic Model    | Dynamic and static Data are combined together and given to bidirectional LSTM layers for feature extraction. Linear layers for classification |
+| LSTM Dynamic Model    | 0         | Dynamic and static Data are combined together and given to bidirectional LSTM layers for feature extraction. Linear layers for classification |
 | TCN Model   | 1         | Temporal Convolutional Layers for dynamic data feature extraction, then combined with static model output with linear layers |
 | Simple Model    | 2 | Just linear layers, no temporal architecture involved  |
 | Modulable LSTM Dynamic Model    | 3 | Same architecture as LSTM Dynamic Model, but allows to choose which data to consider for training |
