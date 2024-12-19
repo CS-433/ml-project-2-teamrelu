@@ -7,7 +7,7 @@ from naive_model.sequences_dataloader import NaiveProteinDataset, create_dynamic
 from sklearn.model_selection import train_test_split
 import torch
 from torch.utils.data import DataLoader
-from utils.training_graphs import plot_training_results
+from trainers.training_graphs import plot_training_results
 
 model = NaiveModel(input_dim=531, num_classes=15, num_timesteps=5)
 optimizer = AdamW(model.parameters(), lr=0.001)
@@ -17,8 +17,7 @@ dynamic_data_path = os.path.join(current_dir, 'datasets/final_dataset_dyn_with_t
 dynamic_data = pd.read_csv(dynamic_data_path)
 sequences = pd.read_csv(sequences_path)
 data = pd.merge(sequences, dynamic_data, on='yORF')
-print(data.columns)
-# dataset = NaiveProteinDataset(sequences, dynamic_data, labels, max_length=512)
+
 # Split dataframe columns based on feature groups
 data_train, data_test = train_test_split(data, test_size=0.2, random_state=30026)
 sequences_train = data_train.iloc[:, 1]
