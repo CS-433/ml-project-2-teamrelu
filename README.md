@@ -76,7 +76,7 @@ For our dynamic localization problem, we tried 4 different architectures.
 | Simple Model    | 2 | Just linear layers, no temporal architecture involved  |
 | Modulable LSTM Dynamic Model    | 3 | Same architecture as LSTM Dynamic Model, but allows to choose which data to consider for training |
 
-## Repository infos <a name="reposutory-infos"></a>
+## Repository infos <a name="repository-infos"></a>
 
 Apart from the two Jupyter Notebooks, the reposutory is organized in folders which handle different tasks:
 * _configs_: for creating datasets and dataloaders
