@@ -73,7 +73,7 @@ def k_fold_cross_validation_static(
 
             # Initialize the model
             model = model_class(dropout=params['dropout']).to(device)
-            model.init_weights()
+            model.initialize_weights()
             
             # Initialize optimizer and scheduler
             optimizer = torch.optim.AdamW(model.parameters(), lr=params['learning_rate'], weight_decay=params['weight_decay'])

@@ -1,15 +1,14 @@
 {   
     "file_path": "datasets/final_dataset_dyn_with_te.csv",
-    "test_size": 0.2,
     "batch_size": 32,
     "static_model": {
-      "model_type": 2,
-      "num_epochs": 300,
+      "model_type": 1,
+      "num_epochs": 1000,
       "patience": 20,
-      "dropout": 0.2,
+      "dropout": 0,
       "intermediate_dim": 32,
-      "learning_rate": 0.001,
-      "weight_decay": 1e-3,
+      "learning_rate": 0.02,
+      "weight_decay": 9,
       "criterion": "CrossEntropy",
       "scheduler": {
         "type": "StepLR",
@@ -19,28 +18,5 @@
         "eta_min": 1e-5
       },
       "long_embeddings": true
-    },
-
-    "dynamic_model": {
-      "model_type": 2,
-      "num_epochs": 4,
-      "patience": 20,
-      "dropout": 0.1,
-      "intermediate_dim": 64,
-      "learning_rate": 1e-3,
-      "weight_decay": 1e-4,
-      "lambda_penalty": 1e-5,
-      "criterion": "CrossEntropy",
-      "scheduler": {
-        "type": "StepLR",
-        "step_size": 20,
-        "gamma": 0.1,
-        "T_max": 60,
-        "eta_min": 1e-5
-      },
-      "no_concentration": false,
-      "no_interaction": false,
-      "no_static": false,
-      "static_learnable": true
     }
   }

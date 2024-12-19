@@ -20,17 +20,23 @@ def static_training(num_classes, static_params, dataloader_train, dataloader_tes
     else:
         embedding_dim = 320
 
-    # Inizialize model: 0 for StaticModelMLP, 1 for StaticModelMultibranch, 2 for XGBoost
+    # Inizialize model: 0 for StaticModelMLP, 1 for XGBoost, 2 for StaticModelMultibranch
     if static_params["model_type"] == 0:
+        if verbose:
+            print('Starting training of StaticModelMLP')
         static_model = StaticModelMLP(input_size=embedding_dim, intermediate_dim=static_params["intermediate_dim"],  num_classes=num_classes, dropout=static_params["dropout"])
     if static_params["model_type"] == 1:
-        static_model = StaticModelMultibranch(num_classes=num_classes, embedding_dim=embedding_dim, extremities_dim=20, char_vocab_size=20, char_embed_dim=16, intermediate_dim=static_params["intermediate_dim"], dropout=static_params["dropout"])
-    if static_params["model_type"] == 2:
+        if verbose:
+            print('Starting training of XGBoost')
         train_loss, train_accuracy, test_loss, test_accuracy, model = xgb_training(trainloader = dataloader_train, testloader = dataloader_test, num_boost_round =static_params["num_epochs"], learning_rate=static_params["learning_rate"], dropout=static_params["dropout"], lambda_=static_params["weight_decay"], verbose=verbose)
         state_dict = model.get_dump()
         if verbose:
             plot_training_results(train_loss, train_accuracy, test_loss, test_accuracy)
         return train_loss, train_accuracy, test_loss, test_accuracy, state_dict
+    if static_params["model_type"] == 2:
+        if verbose:
+            print('Starting training of StaticModelMultibranch')
+        static_model = StaticModelMultibranch(num_classes=num_classes, embedding_dim=embedding_dim, extremities_dim=20, char_vocab_size=20, char_embed_dim=16, intermediate_dim=static_params["intermediate_dim"], dropout=static_params["dropout"])
 
     # Weight inizialization for robustness
     static_model.initialize_weights()
