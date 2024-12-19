@@ -62,4 +62,38 @@ def dynamic_training(num_features, num_classes, num_timesteps, embedding_dim, dy
     if verbose:
         plot_training_results(train_loss, train_accuracy, test_loss, test_accuracy)
 
-    return train_loss, train_accuracy, test_loss, test_accuracy, dynamic_model.state_dict()                                                      
+    if verbose:
+        dynamic_accuracy = eval_dynamic_accuracy(dynamic_model, dataloader_test)
+        print(f"Accuracy only on dynamic proteins: {dynamic_accuracy}")
+
+
+    return train_loss, train_accuracy, test_loss, test_accuracy, dynamic_model.state_dict() 
+
+
+def eval_dynamic_accuracy(dynamic_model, dataloader_test):
+
+    dynamic_model.eval()
+    total_correct_accuracy = 0  
+    total_count = 0  
+
+    for batch in dataloader_test:
+
+        dynamic_data, global_input, ind_start_seq, ind_end_seq, static_label, dynamic_label = batch
+        output_val = dynamic_model(dynamic_data, global_input, ind_start_seq, ind_end_seq)
+        
+        _, predicted = torch.max(output_val, 2)
+        
+        mask = ~torch.all(dynamic_label[:, 1:] == dynamic_label[:, :-1], dim=1) 
+        filtered_predicted = predicted[mask]
+        print(filtered_predicted)
+        filtered_labels = dynamic_label[mask]
+        
+        if filtered_predicted.size(0) > 0:
+            correct = (filtered_predicted == filtered_labels).sum().item() #counts how many correct predictions we have
+            total_correct_accuracy += correct
+            total_count += filtered_predicted.numel()
+
+    # Calcola l'accuracy finale
+    accuracy = total_correct_accuracy / total_count if total_count > 0 else 0
+    
+    return accuracy
