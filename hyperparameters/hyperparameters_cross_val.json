@@ -41,6 +41,6 @@
       "no_concentration": false,
       "no_interaction": false,
       "no_static": false,
-      "static_learnable": false
+      "static_learnable": true
     }
   }

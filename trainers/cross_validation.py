@@ -153,7 +153,7 @@ def k_fold_cross_validation_dynamic(
     verbose=True
 ):
     """
-    Performs k-fold cross-validation.
+    Performs k-fold cross-validation for the dynamic model.
 
     Args:
         static_model_class (Type[nn.Module]): PyTorch model class for static problem (not an instance)
@@ -234,12 +234,7 @@ def k_fold_cross_validation_dynamic(
             )
             
             # Create dynamic model
-            temporal_block = TemporalBlock(dropout=params['dropout'])
-            temporal_block.initialize_weights()
-            # Create dynamic model and initialize its weights
-            #dynamic_model = TCNDynamicModel(static_model, temporal_block, static_learnable=False, num_timesteps=num_timesteps, num_classes=num_classes)
-            #dynamic_model.initialize_weights()
-            dynamic_model = dynamic_model_class(static_model, static_learnable=params['static_learnable'], hidden_size=params['hidden_size'], num_layers=2, dropout=params['dropout'])
+            dynamic_model = dynamic_model_class(static_model, static_learnable=params['static_learnable'], hidden_size=params['hidden_size'], dropout=params['dropout'])
 
             # Initialize optimizer and scheduler
             optimizer = torch.optim.AdamW(dynamic_model.parameters(), lr=params['learning_rate'], weight_decay=params['weight_decay'])
